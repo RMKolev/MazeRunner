@@ -1,0 +1,23 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "Maze",
+	"Description": "",
+	"Category": "Other",
+	"CreatedBy": "tantanita",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "Maze",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
+		}
+	]
+}
