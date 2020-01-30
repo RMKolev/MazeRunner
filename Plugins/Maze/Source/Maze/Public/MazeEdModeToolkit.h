@@ -3,11 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "TestUI.h"
 #include "Toolkits/BaseToolkit.h"
 
 class FMazeEdModeToolkit : public FModeToolkit
 {
 public:
+
+	TArray<int32> MyArray;
+	ATestUI* test;
 
 	FMazeEdModeToolkit();
 	

@@ -4,6 +4,7 @@
 #include "MazeEdMode.h"
 
 #define LOCTEXT_NAMESPACE "FMazeModule"
+DECLARE_LOG_CATEGORY_EXTERN(CategoryName, DefaultVerbosity, CompileTimeVerbosity);
 
 void FMazeModule::StartupModule()
 {
