@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Rectangle.h"
+//#include "Rectangle.h"
 #include "MazeActor.h"
 #include "MazeBasis.generated.h"
 
@@ -27,8 +27,8 @@ public:
 	// Sets default values for this actor's properties
 	AMazeBasis(FVector, FVector);
 	AMazeBasis();
-	FVector GetMazePointLocation(FMazePoint) const;
-	FVector GetMazeActorLocation(FMazePoint,const AMazeActor&) const;
+	FVector GetMazePointLocation(FIntPoint) const;
+	FVector GetMazeActorLocation(FIntPoint,const AMazeActor&) const;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

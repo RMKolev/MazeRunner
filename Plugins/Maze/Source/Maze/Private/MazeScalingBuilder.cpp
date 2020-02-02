@@ -42,9 +42,9 @@ void AMazeScalingBuilder::BuildSingleRoom(const FMazeRoomParameters& room) const
 				}
 				else {
 					auto assetInstance = assetTemplate->GetDefaultObject();
-					FVector coordinates = this->basis.GetMazeActorLocation(room.coordinates, assetIterator->scale);
-					//if(this->GetComponentByClass())
-					//FTransform spawnTransform(FRotator::ZeroRotator);
+					FVector coordinates = this->basis.GetMazeActorLocation(room.coordinates+assetIterator->localCoordinates, assetIterator->scale);
+					UE_LOG(Maze, Warning, TEXT("This is my %s coordinates"), *coordinates.ToString());
+					instanceMeshes.FindChecked(assetIterator->name)->AddInstanceWorldSpace(FTransform(FRotator::ZeroRotator, coordinates, FVector(assetIterator->scale)));
 				}
 			}
 		}
@@ -54,7 +54,7 @@ void AMazeScalingBuilder::BuildSingleRoom(const FMazeRoomParameters& room) const
 		/*for (auto component = room->GetMazeComponentIterator(); component; ++component) {
 			//if (assets.Contains(component->name)) {
 				UE_LOG(Maze, Error, TEXT("AMazeScalingBuilder::BuildSingleRoom(TSubclassOf<AMazeRoom> room) in ForLoop"))
-				FMazePoint localCoordinates = component->localCoordinates;
+				FIntPoint localCoordinates = component->localCoordinates;
 				localCoordinates = localCoordinates + roomCoordinates;
 				FIntVector scale = component->scale;
 				FString assetName = component->name;

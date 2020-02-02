@@ -23,16 +23,16 @@ struct FMazeBasic {
 		if (scale.X > 0 && scale.Y > 0 && scale.Z > 0) this->scale = scale;
 	}
 	FMazeBasic() :FMazeBasic(FVector(0, 0, 0), FVector(100, 100, 100)) {};
-	FVector GetMazePointLocation(FMazePoint mp) const
+	FVector GetMazePointLocation(FIntPoint mp) const
 	{
-		return start + FVector(mp.x + 0.5, mp.y + 0.5, 0) * scale;
+		return start + FVector(mp.X + 0.5, mp.Y + 0.5, 0) * scale;
 	}
-	FVector GetMazeActorLocation(FMazePoint mp, const AMazeActor& ma) const
+	FVector GetMazeActorLocation(FIntPoint mp, const AMazeActor& ma) const
 	{
 		FIntVector actorScale = ma.GetCurrentScale();
 		return GetMazePointLocation(mp) + FVector(actorScale.X - 1, actorScale.Y - 1, actorScale.Z - 1) * (scale / 2);
 	}
-	FVector GetMazeActorLocation(FMazePoint mp, const FIntVector actorScale) const
+	FVector GetMazeActorLocation(FIntPoint mp, const FIntVector actorScale) const
 	{
 		return GetMazePointLocation(mp) + FVector(actorScale.X - 1, actorScale.Y - 1, actorScale.Z - 1) * (scale / 2);
 	}

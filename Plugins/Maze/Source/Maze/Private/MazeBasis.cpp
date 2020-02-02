@@ -15,12 +15,12 @@ AMazeBasis::AMazeBasis() : start(FVector(0,0,0)), scale(FVector(1,1,1))
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-FVector AMazeBasis::GetMazePointLocation(FMazePoint mp) const
+FVector AMazeBasis::GetMazePointLocation(FIntPoint mp) const
 {
-	return start + FVector(mp.x + 0.5, mp.y  + 0.5,0) * scale;
+	return start + FVector(mp.X + 0.5, mp.Y  + 0.5,0) * scale;
 }
 
-FVector AMazeBasis::GetMazeActorLocation(FMazePoint mp, const AMazeActor& ma) const
+FVector AMazeBasis::GetMazeActorLocation(FIntPoint mp, const AMazeActor& ma) const
 {
 	FIntVector actorScale = ma.GetCurrentScale();
 	return GetMazePointLocation(mp)+FVector(actorScale.X-1, actorScale.Y-1,actorScale.Z-1)*(scale/2);

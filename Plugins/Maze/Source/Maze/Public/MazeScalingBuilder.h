@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "MazeBuilder.h"
 #include "MazeRoom.h"
-#include "Rectangle.h"
+//#include "Rectangle.h"
 #include "MazeScalingBuilder.generated.h"
 
 USTRUCT()
@@ -15,9 +15,9 @@ struct FMazeRoomParameters {
 	UPROPERTY(EditAnywhere)
 		FString templateName;
 	UPROPERTY(EditAnywhere)
-		FMazePoint coordinates;
+		FIntPoint coordinates;
 	UPROPERTY(EditAnywhere)
-		FMazePoint templateScale;
+		FIntPoint templateScale;
 };
 /**
  * 

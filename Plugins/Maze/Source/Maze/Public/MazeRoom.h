@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MazeActor.h"
-#include "Rectangle.h"
+//#include "Rectangle.h"
 #include "MazeRoom.generated.h"
 USTRUCT()
 struct FMazeActorParameters {
@@ -16,7 +16,7 @@ struct FMazeActorParameters {
 	UPROPERTY(EditAnywhere)
 	FIntVector scale;
 	UPROPERTY(EditAnywhere)
-	FMazePoint localCoordinates;
+	FIntPoint localCoordinates;
 };
 UCLASS()
 class MAZE_API AMazeRoom : public AActor
@@ -39,7 +39,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// Sets default values for this actor's properties
 	AMazeRoom();
-	//FMazePoint GetMazeCoordinates() const;
+	//FIntPoint GetMazeCoordinates() const;
 	FString GetName() const { return this->roomName; }
 	auto GetMazeComponentIterator() const { return components.CreateConstIterator(); }
 };
