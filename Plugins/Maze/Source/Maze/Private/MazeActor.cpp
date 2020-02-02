@@ -2,7 +2,7 @@
 
 
 #include "MazeActor.h"
-
+#include "MazeBasis.h" // Temp for testing
 // Sets default values
 AMazeActor::AMazeActor()
 {
@@ -22,7 +22,11 @@ void AMazeActor::UpdateScale(const FIntVector& newScale)
 void AMazeActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+}
+
+FIntVector AMazeActor::GetCurrentScale() const
+{
+	return currentMazeScale;
 }
 
 // Called every frame

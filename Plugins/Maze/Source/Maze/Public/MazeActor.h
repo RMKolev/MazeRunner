@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MazeActor.generated.h"
-
 UCLASS()
 class MAZE_API AMazeActor : public AActor
 {
@@ -38,7 +37,6 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-
+	FIntVector GetCurrentScale() const;
 
 };

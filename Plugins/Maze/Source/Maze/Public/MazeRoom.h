@@ -7,7 +7,17 @@
 #include "MazeActor.h"
 #include "Rectangle.h"
 #include "MazeRoom.generated.h"
+USTRUCT()
+struct FMazeActorScale {
+	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere)
+	FString name;
+	UPROPERTY(EditAnywhere)
+	FIntVector scale;
+	UPROPERTY(EditAnywhere)
+	FMazePoint localCoordinates;
+};
 UCLASS()
 class MAZE_API AMazeRoom : public AActor
 {
@@ -15,7 +25,7 @@ class MAZE_API AMazeRoom : public AActor
 
 private:
 	UPROPERTY(Category = MapsAndSets, EditAnywhere)
-		TMap<FMazePoint, AMazeActor*> components;
+		TArray<FMazeActorScale> components;
 	UPROPERTY(EditAnywhere)
 		FMazePoint coordinates; // Position of the room in the maze. Uses global coordinate system
 
@@ -28,5 +38,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// Sets default values for this actor's properties
 	AMazeRoom();
-	auto GetComponentIterator() const;
+	FMazePoint GetMazeCoordinates() const;
+	auto GetMazeComponentIterator() const { return components.CreateConstIterator(); }
 };

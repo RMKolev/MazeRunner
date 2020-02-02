@@ -24,6 +24,9 @@ struct MAZE_API FMazePoint {
 	bool operator==(const FMazePoint& p) const {
 		return x == p.x && y == p.y;
 	}
+	FMazePoint operator+(FMazePoint f1) {
+		return FMazePoint(this->x + f1.x, this->y + f1.y);
+	}
 };
 inline uint32 GetTypeHash(const FMazePoint& mp)
 {
