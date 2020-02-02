@@ -8,6 +8,17 @@
 #include "Rectangle.h"
 #include "MazeScalingBuilder.generated.h"
 
+USTRUCT()
+struct FMazeRoomParameters {
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+		FString templateName;
+	UPROPERTY(EditAnywhere)
+		FMazePoint coordinates;
+	UPROPERTY(EditAnywhere)
+		FMazePoint templateScale;
+};
 /**
  * 
  */
@@ -17,12 +28,14 @@ class MAZE_API AMazeScalingBuilder : public AMazeBuilder
 	GENERATED_BODY()
 private:
 	UPROPERTY(EditAnywhere)
-	TArray<TSubclassOf<AMazeRoom>> rooms;
+	TArray<TSubclassOf<AMazeRoom>> roomTemplates;
+	UPROPERTY(EditAnywhere)
+	TArray<FMazeRoomParameters> rooms;
 protected:
 	virtual void BeginPlay() override;
 public:
 	virtual void BuildMaze() override;
-	void BuildSingleRoom(const TSubclassOf<AMazeRoom>&) const;
+	void BuildSingleRoom(const FMazeRoomParameters&) const;
 	void BuildRooms() const;
 	void BuildPaths() const;
 };

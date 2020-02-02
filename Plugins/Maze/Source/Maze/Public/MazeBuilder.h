@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "MazeRoom.h"
 #include "MazeActor.h"
+#include "Components/InstancedStaticMeshComponent.h"
 #include "MazeBuilder.generated.h"
 
 USTRUCT()
@@ -45,7 +46,9 @@ class MAZE_API AMazeBuilder : public AActor
 protected:	
 	UWorld* world;
 	UPROPERTY(EditAnywhere)
-	TMap<FString,TSubclassOf<AMazeActor>> assets;
+	TMap<FString,TSubclassOf<UInstancedStaticMeshComponent>> assets;
+
+	TMap<FString, UInstancedStaticMeshComponent*> instanceMeshes;
 	UPROPERTY(EditAnywhere)
 	FMazeBasic basis;
 	virtual void BeginPlay() override;

@@ -11,6 +11,12 @@ AMazeBuilder::AMazeBuilder()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	for (auto instance : assets) {
+		auto val = instance.Value.GetDefaultObject();
+		instanceMeshes.Add(instance.Key, val);
+		val->AttachTo(RootComponent);
+	}
+
 }
 
 // Called when the game starts or when spawned

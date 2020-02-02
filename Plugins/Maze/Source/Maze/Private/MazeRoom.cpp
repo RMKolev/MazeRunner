@@ -10,12 +10,6 @@ AMazeRoom::AMazeRoom()
 	PrimaryActorTick.bCanEverTick = true;
 
 }
-
-FMazePoint AMazeRoom::GetMazeCoordinates() const
-{
-	return this->coordinates;
-}
-
 /*auto AMazeRoom::GetMazeComponentIterator() const
 {
 	return components.CreateConstIterator();
