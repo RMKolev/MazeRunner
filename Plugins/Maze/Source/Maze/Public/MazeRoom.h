@@ -24,11 +24,12 @@ class MAZE_API AMazeRoom : public AActor
 	GENERATED_BODY()
 
 private:
-	UPROPERTY(EditAnywhere)
-		FString roomName;
-	UPROPERTY(Category = MapsAndSets, EditAnywhere)
-		TArray<FMazeActorParameters> components;
-
+	UPROPERTY(Category = MazeParameters, EditAnywhere)
+		FString roomName; // Name of the room
+	UPROPERTY(Category = MazeParameters, EditAnywhere)
+		TArray<FMazeActorParameters> components; //Components of the room
+	UPROPERTY(Category = MazeParameters, EditAnywhere)
+		TArray<FIntPoint> exitPoints; // All points used as exits. It is essential they are entrances to the room, otherwise it will become impossible to enter it.
 
 protected:
 	// Called when the game starts or when spawned
@@ -40,6 +41,7 @@ public:
 	// Sets default values for this actor's properties
 	AMazeRoom();
 	//FIntPoint GetMazeCoordinates() const;
-	FString GetName() const { return this->roomName; }
+	FString GetMazeRoomName() const { return this->roomName; }
 	auto GetMazeComponentIterator() const { return components.CreateConstIterator(); }
+	auto GetExitPointsIterator() const { return exitPoints.CreateConstIterator(); }
 };
