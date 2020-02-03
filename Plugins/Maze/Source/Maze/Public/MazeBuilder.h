@@ -47,7 +47,7 @@ protected:
 	UWorld* world;
 	UPROPERTY(EditAnywhere)
 	TMap<FString,TSubclassOf<UInstancedStaticMeshComponent>> assets;
-
+	UPROPERTY()
 	TMap<FString, UInstancedStaticMeshComponent*> instanceMeshes;
 	UPROPERTY(EditAnywhere)
 	FMazeBasic basis;
@@ -57,6 +57,7 @@ public:
 	virtual void BuildMaze() {};
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	// Sets default values for this actor's properties
 	AMazeBuilder();
 };

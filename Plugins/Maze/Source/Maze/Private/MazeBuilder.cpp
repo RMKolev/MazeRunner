@@ -36,3 +36,9 @@ void AMazeBuilder::Tick(float DeltaTime)
 
 }
 
+void AMazeBuilder::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	this->instanceMeshes.Empty();
+	Super::EndPlay(EndPlayReason);
+}
+

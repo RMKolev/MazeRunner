@@ -9,9 +9,10 @@ void AMazeScalingBuilder::BeginPlay()
 {
 	Super::BeginPlay();
 	for (auto room : rooms) {
-			UE_LOG(Maze, Error, TEXT("AMazeScalingBuilder::BeginPlay() ForEach"));
+			UE_LOG(Maze, Log, TEXT("AMazeScalingBuilder::BeginPlay() ForEach"));
 			BuildSingleRoom(room);
 	}
+
 }
 
 void AMazeScalingBuilder::BuildMaze()
@@ -24,16 +25,17 @@ void AMazeScalingBuilder::BuildSingleRoom(const FMazeRoomParameters& room) const
 	UE_LOG(Maze, Error, TEXT("AMazeScalingBuilder::BuildSingleRoom(TSubclassOf<AMazeRoom> room) in func"))
 	if (IsValid(world)) {
 		auto roomTemplate = roomTemplates.FindByPredicate([&room](const TSubclassOf<AMazeRoom> t) {
-			if (t.GetDefaultObject()->GetName().Equals(room.templateName)) {
+			if (t.GetDefaultObject()->GetMazeRoomName().Equals(room.templateName)) {
 				return true;
 			}
 			return false;
 			});
 		if (roomTemplate == nullptr) {
-			UE_LOG(Maze, Error, TEXT("MazeScalingBuilder: Room Template was not found"));
+			UE_LOG(Maze, Error, TEXT("MazeScalingBuilder: Room Template was not found - %s"), *room.templateName);
 		}
 		else {
 			auto roomInstance = roomTemplate->GetDefaultObject();
+			roomInstance->GenerateWalls(room.templateScale,room.exitPoints);
 			auto assetIterator = roomInstance->GetMazeComponentIterator();
 			for(assetIterator;assetIterator;assetIterator++){
 				auto assetTemplate = this->assets.Find(assetIterator->name);
@@ -42,9 +44,10 @@ void AMazeScalingBuilder::BuildSingleRoom(const FMazeRoomParameters& room) const
 				}
 				else {
 					auto assetInstance = assetTemplate->GetDefaultObject();
-					FVector coordinates = this->basis.GetMazeActorLocation(room.coordinates+assetIterator->localCoordinates, assetIterator->scale);
+					auto actorScale = assetIterator->bScale ? FVector(FIntVector(room.templateScale.X * assetIterator->scale.X, room.templateScale.Y * assetIterator->scale.Y, 1 * assetIterator->scale.Z)):FVector(assetIterator->scale);
+					FVector coordinates = this->basis.GetMazeActorLocation(room.coordinates + assetIterator->localCoordinates, FIntVector(actorScale));
+					instanceMeshes.FindChecked(assetIterator->name)->AddInstanceWorldSpace(FTransform(FRotator::ZeroRotator, coordinates, actorScale));
 					UE_LOG(Maze, Warning, TEXT("This is my %s coordinates"), *coordinates.ToString());
-					instanceMeshes.FindChecked(assetIterator->name)->AddInstanceWorldSpace(FTransform(FRotator::ZeroRotator, coordinates, FVector(assetIterator->scale)));
 				}
 			}
 		}

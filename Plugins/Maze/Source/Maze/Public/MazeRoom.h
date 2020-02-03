@@ -17,31 +17,35 @@ struct FMazeActorParameters {
 	FIntVector scale;
 	UPROPERTY(EditAnywhere)
 	FIntPoint localCoordinates;
+	UPROPERTY(EditAnywhere)
+		bool bScale = true;
+	FMazeActorParameters(const FString& name, const FIntVector& scale, const FIntPoint& localCoordinates, bool bScale = true) :
+		name(name), scale(scale), localCoordinates(localCoordinates), bScale(bScale) {};
+	FMazeActorParameters() = default;
 };
 UCLASS()
 class MAZE_API AMazeRoom : public AActor
 {
 	GENERATED_BODY()
 
-private:
+protected:
 	UPROPERTY(Category = MazeParameters, EditAnywhere)
 		FString roomName; // Name of the room
 	UPROPERTY(Category = MazeParameters, EditAnywhere)
 		TArray<FMazeActorParameters> components; //Components of the room
 	UPROPERTY(Category = MazeParameters, EditAnywhere)
-		TArray<FIntPoint> exitPoints; // All points used as exits. It is essential they are entrances to the room, otherwise it will become impossible to enter it.
-
+		bool bGenerateWalls;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	//virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	// Sets default values for this actor's properties
 	AMazeRoom();
-	//FIntPoint GetMazeCoordinates() const;
+	//AMazeRoom(const FString&, const TArray<FMazeActorParameters>&, const TArray<FIntPoint>& exitPoints);
 	FString GetMazeRoomName() const { return this->roomName; }
 	auto GetMazeComponentIterator() const { return components.CreateConstIterator(); }
-	auto GetExitPointsIterator() const { return exitPoints.CreateConstIterator(); }
+	virtual void GenerateWalls(const FIntPoint& roomSize, const TArray<FIntPoint>& exitPoints);
 };
