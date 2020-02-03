@@ -3,40 +3,49 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
+//#include "Rectangle.generated.h"
 /**
  * 
  */
-struct MAZE_API MazePoint {
-	int x;
-	int y;
-	MazePoint(int x, int y) :x(x), y(y) {}
 
-	static int getDistanceSquared(const MazePoint p1, const MazePoint p2) {
+/*USTRUCT()
+struct MAZE_API FIntPoint {
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	int x;
+	UPROPERTY(EditAnywhere)
+	int y;
+
+	FIntPoint(int x, int y) :x(x), y(y) {}
+	FIntPoint() = default;
+	static int getDistanceSquared(const FIntPoint p1, const FIntPoint p2) {
 		return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y);
 	}
-	bool operator==(const MazePoint& p) const {
+	bool operator==(const FIntPoint& p) const {
 		return x == p.x && y == p.y;
 	}
-};
-
+	FIntPoint operator+(FIntPoint f1) {
+		return FIntPoint(this->x + f1.x, this->y + f1.y);
+	}
+};*/
 class MAZE_API FRectangle
 {
 private:
-	MazePoint topLeft;
+	FIntPoint topLeft;
 	int width;
 	int height;
 public:
 	static int clamp(int, int, int);
-	MazePoint getBottomLeft() const;
+	FIntPoint getBottomLeft() const;
 	bool intersectsWith(const FRectangle& r) const;
-	MazePoint getNearestPointFrom(const FRectangle& r) const;
-	MazePoint getNearestPointTo(const FRectangle& r) const;
+	FIntPoint getNearestPointFrom(const FRectangle& r) const;
+	FIntPoint getNearestPointTo(const FRectangle& r) const;
 	uint64 getDistanceSquaredTo(FRectangle r2) const;
 	uint64 getDistanceToCenterSquared() const;
 	bool operator<(const FRectangle r2) const;
 	bool operator<=(const FRectangle r2) const;
-	bool containsPoint(const MazePoint&) const;
+	bool containsPoint(const FIntPoint&) const;
 	FRectangle getIntersectionRectangle(const FRectangle&) const;
 	FRectangle(int, int, int, int);
 	FRectangle() = default;

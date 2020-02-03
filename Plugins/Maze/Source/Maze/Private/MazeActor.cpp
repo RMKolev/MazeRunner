@@ -2,9 +2,13 @@
 
 
 #include "MazeActor.h"
+<<<<<<< HEAD
 #include "Components/StaticMeshComponent.h"
 #include "Maze.h"
 
+=======
+#include "MazeBasis.h" // Temp for testing
+>>>>>>> Backend
 // Sets default values
 AMazeActor::AMazeActor()
 {
@@ -24,7 +28,11 @@ void AMazeActor::UpdateScale(const FIntVector& newScale)
 void AMazeActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+}
+
+FIntVector AMazeActor::GetCurrentScale() const
+{
+	return currentMazeScale;
 }
 
 // Called every frame
