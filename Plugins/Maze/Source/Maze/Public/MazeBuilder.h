@@ -5,36 +5,30 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MazeRoom.h"
-#include "MazeActor.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "MazeBuilder.generated.h"
 
 USTRUCT()
-struct FMazeBasic {
+struct FMazeBasis {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
-		FVector start; //The position of 0,0 
+		FVector Start; //The position of 0,0 
 	UPROPERTY(EditAnywhere)
-		FVector scale;
+		FVector Scale;
 
-	FMazeBasic(FVector start, FVector scale) : start(start)
+	FMazeBasis(FVector Start, FVector Scale) : Start(Start)
 	{
-		if (scale.X > 0 && scale.Y > 0 && scale.Z > 0) this->scale = scale;
+		if (Scale.X > 0 && Scale.Y > 0 && Scale.Z > 0) this->Scale = Scale;
 	}
-	FMazeBasic() :FMazeBasic(FVector(0, 0, 0), FVector(100, 100, 100)) {};
-	FVector GetMazePointLocation(FIntPoint mp) const
+	FMazeBasis() :FMazeBasis(FVector(0, 0, 0), FVector(100, 100, 100)) {};
+	FVector GetMazePointLocation(FIntPoint Mp) const
 	{
-		return start + FVector(mp.X + 0.5, mp.Y + 0.5, 0) * scale;
+		return Start + FVector(Mp.X + 0.5, Mp.Y + 0.5, 0) * Scale;
 	}
-	FVector GetMazeActorLocation(FIntPoint mp, const AMazeActor& ma) const
+	FVector GetMazeActorLocation(FIntPoint Mp, const FIntVector ActorScale) const
 	{
-		FIntVector actorScale = ma.GetCurrentScale();
-		return GetMazePointLocation(mp) + FVector(actorScale.X - 1, actorScale.Y - 1, actorScale.Z - 1) * (scale / 2);
-	}
-	FVector GetMazeActorLocation(FIntPoint mp, const FIntVector actorScale) const
-	{
-		return GetMazePointLocation(mp) + FVector(actorScale.X - 1, actorScale.Y - 1, actorScale.Z - 1) * (scale / 2);
+		return GetMazePointLocation(Mp) + FVector(ActorScale.X - 1, ActorScale.Y - 1, ActorScale.Z - 1) * (Scale / 2);
 	}
 };
 
@@ -44,13 +38,13 @@ class MAZE_API AMazeBuilder : public AActor
 	GENERATED_BODY()
 	
 protected:	
-	UWorld* world;
+	UWorld* World;
 	UPROPERTY(EditAnywhere)
-	TMap<FString,TSubclassOf<UInstancedStaticMeshComponent>> assets;
+	TMap<FString,TSubclassOf<UInstancedStaticMeshComponent>> Assets;
 	UPROPERTY()
-	TMap<FString, UInstancedStaticMeshComponent*> instanceMeshes;
+	TMap<FString, UInstancedStaticMeshComponent*> InstanceMeshes;
 	UPROPERTY(EditAnywhere)
-	FMazeBasic basis;
+	FMazeBasis Basis;
 	virtual void BeginPlay() override;
 public:	
 	// Function to build the maze. To be implemented in heirs of class.

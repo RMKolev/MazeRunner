@@ -8,9 +8,9 @@
 void AMazeScalingBuilder::BeginPlay()
 {
 	Super::BeginPlay();
-	for (auto room : rooms) {
+	for (auto Room : Rooms) {
 			UE_LOG(Maze, Log, TEXT("AMazeScalingBuilder::BeginPlay() ForEach"));
-			BuildSingleRoom(room);
+			BuildSingleRoom(Room);
 	}
 
 }
@@ -20,49 +20,36 @@ void AMazeScalingBuilder::BuildMaze()
 	// TO DO;
 }
 
-void AMazeScalingBuilder::BuildSingleRoom(const FMazeRoomParameters& room) const
+void AMazeScalingBuilder::BuildSingleRoom(const FMazeRoomParameters& Room) const
 {
-	UE_LOG(Maze, Error, TEXT("AMazeScalingBuilder::BuildSingleRoom(TSubclassOf<AMazeRoom> room) in func"))
-	if (IsValid(world)) {
-		auto roomTemplate = roomTemplates.FindByPredicate([&room](const TSubclassOf<AMazeRoom> t) {
-			if (t.GetDefaultObject()->GetMazeRoomName().Equals(room.templateName)) {
+	UE_LOG(Maze, Error, TEXT("AMazeScalingBuilder::BuildSingleRoom(TSubclassOf<AMazeRoom> Room) in func"))
+	if (IsValid(World)) {
+		auto RoomTemplate = RoomTemplates.FindByPredicate([&Room](const TSubclassOf<AMazeRoom> MR) {
+			if (MR.GetDefaultObject()->GetMazeRoomName().Equals(Room.TemplateName)) {
 				return true;
 			}
 			return false;
 			});
-		if (roomTemplate == nullptr) {
-			UE_LOG(Maze, Error, TEXT("MazeScalingBuilder: Room Template was not found - %s"), *room.templateName);
+		if (RoomTemplate == nullptr) {
+			UE_LOG(Maze, Error, TEXT("MazeScalingBuilder: Room Template was not found - %s"), *Room.TemplateName);
 		}
 		else {
-			auto roomInstance = roomTemplate->GetDefaultObject();
-			roomInstance->GenerateWalls(room.templateScale,room.exitPoints);
-			auto assetIterator = roomInstance->GetMazeComponentIterator();
-			for(assetIterator;assetIterator;assetIterator++){
-				auto assetTemplate = this->assets.Find(assetIterator->name);
-				if (assetTemplate == nullptr) {
-					UE_LOG(Maze, Error, TEXT("MazeScalingBuilder: I should build an object, but there is no template with this name"));
+			auto RoomInstance = RoomTemplate->GetDefaultObject();
+			RoomInstance->GenerateWalls(Room.TemplateScale,Room.ExitPoints);
+			auto AssetIterator = RoomInstance->GetMazeComponentIterator();
+			for(AssetIterator;AssetIterator;AssetIterator++){
+				auto AssetTemplate = this->Assets.Find(AssetIterator->Name);
+				if (AssetTemplate == nullptr) {
+					UE_LOG(Maze, Error, TEXT("MazeScalingBuilder: I should build an object, but there is no template with this Name"));
 				}
 				else {
-					auto assetInstance = assetTemplate->GetDefaultObject();
-					auto actorScale = assetIterator->bScale ? FVector(FIntVector(room.templateScale.X * assetIterator->scale.X, room.templateScale.Y * assetIterator->scale.Y, 1 * assetIterator->scale.Z)):FVector(assetIterator->scale);
-					FVector coordinates = this->basis.GetMazeActorLocation(room.coordinates + assetIterator->localCoordinates, FIntVector(actorScale));
-					instanceMeshes.FindChecked(assetIterator->name)->AddInstanceWorldSpace(FTransform(FRotator::ZeroRotator, coordinates, actorScale));
-					UE_LOG(Maze, Warning, TEXT("This is my %s coordinates"), *coordinates.ToString());
+					auto AssetInstance = AssetTemplate->GetDefaultObject();
+					auto ActorScale = AssetIterator->bScale ? FVector(FIntVector(Room.TemplateScale.X * AssetIterator->Scale.X, Room.TemplateScale.Y * AssetIterator->Scale.Y, 1 * AssetIterator->Scale.Z)):FVector(AssetIterator->Scale);
+					FVector Coordinates = this->Basis.GetMazeActorLocation(Room.Coordinates + AssetIterator->LocalCoordinates, FIntVector(ActorScale));
+					InstanceMeshes.FindChecked(AssetIterator->Name)->AddInstanceWorldSpace(FTransform(FRotator::ZeroRotator, Coordinates, ActorScale));
+					UE_LOG(Maze, Warning, TEXT("This is my %s Coordinates"), *Coordinates.ToString());
 				}
 			}
 		}
-		
-		
-		
-		/*for (auto component = room->GetMazeComponentIterator(); component; ++component) {
-			//if (assets.Contains(component->name)) {
-				UE_LOG(Maze, Error, TEXT("AMazeScalingBuilder::BuildSingleRoom(TSubclassOf<AMazeRoom> room) in ForLoop"))
-				FIntPoint localCoordinates = component->localCoordinates;
-				localCoordinates = localCoordinates + roomCoordinates;
-				FIntVector scale = component->scale;
-				FString assetName = component->name;
-				FVector location = basis.GetMazeActorLocation(localCoordinates, scale);
-				world->SpawnActor<AMazeActor>(assets.FindChecked(component->name),location,FRotator::ZeroRotator);
-			//}*/
 	}
 }

@@ -13,33 +13,33 @@ AMazeRoom::AMazeRoom()
 
 }
 
-void AMazeRoom::GenerateWalls(const FIntPoint& roomSize, const TArray<FIntPoint>& exitPoints)
+void AMazeRoom::GenerateWalls(const FIntPoint& RoomSize, const TArray<FIntPoint>& ExitPoints)
 {
-	//components.Empty();
-	UE_LOG(Maze, Warning, TEXT("AMazeRoom::GenerateWalls -> starting wall generation"));
+	//Components.Empty();
+	UE_LOG(Maze, Warning, TEXT("AMazeRoom::GenerateWalls -> starting Wall generation"));
 	if (bGenerateWalls) {
-		FMazeActorParameters wall = FMazeActorParameters(FString("Wall"), FIntVector(0, 1, 2), FIntPoint(0, 0),false);
-		for (int32 i = 0; i < roomSize.X - 1; ++i) {
-			bool clear = true;
-			for (auto exit : exitPoints) {
-				if (exit.X == i && exit.Y == 0) clear = false;
+		FMazeActorParameters Wall = FMazeActorParameters(FString("Wall"), FIntVector(0, 1, 2), FIntPoint(0, 0),false);
+		for (int32 i = 0; i < RoomSize.X - 1; ++i) {
+			bool Clear = true;
+			for (auto Exit : ExitPoints) {
+				if (Exit.X == i && Exit.Y == 0) Clear = false;
 			}
-			if (clear) {
-				wall.scale.X++;
+			if (Clear) {
+				Wall.Scale.X++;
 			}
 			else {
-				if (wall.scale.X != 0) {
-					UE_LOG(Maze, Warning, TEXT("Adding wall %s, size %d"), *wall.localCoordinates.ToString(),wall.scale.X)
-					components.Add(wall);
+				if (Wall.Scale.X != 0) {
+					UE_LOG(Maze, Warning, TEXT("Adding Wall %s, size %d"), *Wall.LocalCoordinates.ToString(),Wall.Scale.X)
+					Components.Add(Wall);
 				}
-				wall = FMazeActorParameters(FString("Wall"), FIntVector(0, 1, 2), FIntPoint(i+1, 0),false);
+				Wall = FMazeActorParameters(FString("Wall"), FIntVector(0, 1, 2), FIntPoint(i+1, 0),false);
 			}
 		}
-		if (wall.scale.X != 0) {
-			UE_LOG(Maze, Warning, TEXT("Adding wall after arr %s, size %d"), *wall.localCoordinates.ToString(), wall.scale.X)
-			components.Add(wall);
+		if (Wall.Scale.X != 0) {
+			UE_LOG(Maze, Warning, TEXT("Adding Wall after arr %s, size %d"), *Wall.LocalCoordinates.ToString(), Wall.Scale.X)
+			Components.Add(Wall);
 		}
-		for (int32 i = 0; i < roomSize.Y - 1; ++i) {
+		for (int32 i = 0; i < RoomSize.Y - 1; ++i) {
 
 		}
 	}
@@ -48,8 +48,8 @@ void AMazeRoom::GenerateWalls(const FIntPoint& roomSize, const TArray<FIntPoint>
 	}
 }
 /*
-AMazeRoom::AMazeRoom(const FString& name, const TArray<FMazeActorParameters>& components, const TArray<FIntPoint>& exitPoints)
-	: roomName(name), components(components), exitPoints(exitPoints)
+AMazeRoom::AMazeRoom(const FString& Name, const TArray<FMazeActorParameters>& Components, const TArray<FIntPoint>& ExitPoints)
+	: RoomName(Name), Components(Components), ExitPoints(ExitPoints)
 {
 }*/
 
