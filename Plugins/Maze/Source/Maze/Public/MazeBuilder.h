@@ -46,7 +46,7 @@ class MAZE_API AMazeBuilder : public AActor
 protected:	
 	UWorld* world;
 	UPROPERTY(EditAnywhere)
-	TMap<FString,TSubclassOf<UInstancedStaticMeshComponent>> assets;
+	TMap<FString, TSubclassOf<UInstancedStaticMeshComponent>> assets;
 
 	TMap<FString, UInstancedStaticMeshComponent*> instanceMeshes;
 	UPROPERTY(EditAnywhere)
