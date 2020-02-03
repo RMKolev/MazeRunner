@@ -2,6 +2,8 @@
 
 
 #include "MazeActor.h"
+#include "Components/StaticMeshComponent.h"
+#include "Maze.h"
 
 // Sets default values
 AMazeActor::AMazeActor()

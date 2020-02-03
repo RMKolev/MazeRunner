@@ -23,11 +23,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	float XPosition;
-	float CurrTime;
+	float SideOfCubeAtScaleOne = 100.f;
 
-	UPROPERTY()
-	FVector PrevPosition;
+	UPROPERTY(EditDefaultsOnly)
+	FVector ScaleForAllMeshes;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AMazeActor> WallActorClass;
@@ -35,4 +34,12 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AMazeActor> FloorActorClass;
 
+	UPROPERTY(EditDefaultsOnly)
+	class UInstancedStaticMeshComponent* WallInstancedMesh;
+
+	UPROPERTY(EditDefaultsOnly)
+	class UInstancedStaticMeshComponent* FloorInstancedMesh;
+
+	UPROPERTY(EditDefaultsOnly)
+	class UStaticMeshComponent* DefaultMesh;
 };
