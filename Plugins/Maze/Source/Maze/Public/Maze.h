@@ -7,6 +7,7 @@
 
 DECLARE_LOG_CATEGORY_EXTERN(Maze, Log, All);
 
+
 class FMazeModule : public IModuleInterface
 {
 public:

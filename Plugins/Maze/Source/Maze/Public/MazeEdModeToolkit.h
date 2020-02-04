@@ -6,14 +6,26 @@
 #include "TestUI.h"
 #include "Toolkits/BaseToolkit.h"
 
+/*
+UENUM()
+enum MazeBuildingMode
+{
+	Roombased    UMETA(DisplayName = "Roombased"),
+	Cavebased    UMETA(DisplayName = "Cavebased")
+	// it can be extended
+};
+*/
+
 class FMazeEdModeToolkit : public FModeToolkit
 {
 public:
 
-	TArray<int32> MyArray;
-	ATestUI* test;
-
 	FMazeEdModeToolkit();
+
+	FReply OnClickedRoombasedMode();
+	FReply OnClickedCavebasedMode();
+	FReply InstantiateNewObject();
+	//TSharedRef<SWidget> CreateBuildingModeButton();
 	
 	/** FModeToolkit interface */
 	virtual void Init(const TSharedPtr<IToolkitHost>& InitToolkitHost) override;
@@ -27,4 +39,10 @@ public:
 private:
 
 	TSharedPtr<SWidget> ToolkitWidget;
+	//TSharedPtr<SWidget> BuildingModeButton;
+
+	TArray<int32> MyArray;
+	ATestUI* test;
+
+	//MazeBuildingMode BuildingMode;
 };

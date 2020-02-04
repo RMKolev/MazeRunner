@@ -13,16 +13,16 @@ class MAZE_API ATestUI : public AActor
 	
 public:	
 	// Sets default values for this actor's properties
-	UPROPERTY()
+	UPROPERTY(Category = MazeProperties, EditAnywhere)
 	int32 RandomInt_1;
 
-	UPROPERTY()
+	UPROPERTY(Category = MazeProperties, EditAnywhere)
 	int32 RandomInt_2;
 
-	UPROPERTY()
+	UPROPERTY(Category = MazeProperties, EditAnywhere)
 	float RandomFloat;
 
-	UPROPERTY()
+	UPROPERTY(Category = MazeProperties, EditAnywhere)
 	TArray<int32> RandomIntegers;
 
 	ATestUI();

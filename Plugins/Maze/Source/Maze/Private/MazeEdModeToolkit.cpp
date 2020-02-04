@@ -22,20 +22,79 @@ FMazeEdModeToolkit::FMazeEdModeToolkit()
 {
 }
 
-void FMazeEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
+FReply FMazeEdModeToolkit::OnClickedRoombasedMode()
+{
+	//BuildingMode = Roombased;
+	UE_LOG(LogTemp, Warning, TEXT("Roombased mode."));
+
+	InstantiateNewObject();
+
+	return FReply::Handled();
+}
+
+FReply FMazeEdModeToolkit::OnClickedCavebasedMode()
+{
+	//BuildingMode = Cavebased;
+	UE_LOG(LogTemp, Warning, TEXT("Cavebased mode."));
+
+	InstantiateNewObject();
+
+	return FReply::Handled();
+}
+
+FReply FMazeEdModeToolkit::InstantiateNewObject()
 {
 	MyArray.Init(10, 5);
-	UWorld * EditorWorld = GEditor->GetEditorWorldContext().World();
-	test = (ATestUI*) EditorWorld->SpawnActor(ATestUI::StaticClass());
+	UWorld* EditorWorld = GEditor->GetEditorWorldContext().World();
+
+	FActorSpawnParameters SpawnInfo;
+	FVector Location = FVector(0.0f);
+	FRotator Rotation = FRotator(0, 0, 0);
+
+	test = (ATestUI*)EditorWorld->SpawnActor(ATestUI::StaticClass(), &Location, &Rotation);
 	test->Init(1, 2, 3.5f, MyArray);
 
-	struct Locals
+	UE_LOG(LogTemp, Warning, TEXT("New object."));
+
+	return FReply::Handled();
+}
+
+/*TSharedRef<SWidget> FMazeEdModeToolkit::CreateBuildingModeButton()
+{
+	switch (BuildingMode)
 	{
-		static bool IsWidgetEnabled()
+		case Roombased:
 		{
-			return GEditor->GetSelectedActors()->Num() != 0;
+			UE_LOG(LogTemp, Warning, TEXT("Roombased!!!"));
+
+			return SAssignNew(BuildingModeButton, SButton)
+				   .Text(FText::FromString("Create Roombased Maze"))
+				   .OnClicked(this, &FMazeEdModeToolkit::InstantiateNewObject);
+		}
+		case Cavebased:
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Cavebased!!!"));
+
+			return SAssignNew(BuildingModeButton, SButton)
+				   .Text(FText::FromString("Create Cavebased Maze"))
+				   .OnClicked(this, &FMazeEdModeToolkit::InstantiateNewObject);
+		}
+		default:
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Nothing specified!!!"));
+
+			return SAssignNew(BuildingModeButton, SButton)
+				   .Text(FText::FromString("No building mode specified."));
+				   //.OnClicked(this, &FMazeEdModeToolkit::InstantiateNewObject);
 		}
 
+	}
+}*/
+
+void FMazeEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
+{
+	struct Locals
+	{
 		static FReply OnButtonClick(FVector InOffset)
 		{
 			USelection* SelectedActors = GEditor->GetSelectedActors();
@@ -60,14 +119,7 @@ void FMazeEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 
 			return FReply::Handled();
 		}
-
-		static TSharedRef<SWidget> MakeButton(FText InLabel, const FVector InOffset)
-		{
-			return SNew(SButton)
-				.Text(InLabel)
-				.OnClicked_Static(&Locals::OnButtonClick, InOffset);
-		}
-
+			   
 	};
 
 	const float Factor = 256.0f;
@@ -75,7 +127,6 @@ void FMazeEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 	SAssignNew(ToolkitWidget, SBorder)
 		.HAlign(HAlign_Center)
 		.Padding(25)
-		//.IsEnabled_Static(&Locals::IsWidgetEnabled)
 		[
 			SNew(SVerticalBox)
 			+ SVerticalBox::Slot()
@@ -85,39 +136,11 @@ void FMazeEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 			[
 				SNew(STextBlock)
 				.AutoWrapText(true)
-				.Text(LOCTEXT("HelperLabel", "Select some actors and move them around using buttons below"))
+				.Text(LOCTEXT("HelperLabel", "Choose maze mode:"))
 			]
-			+ SVerticalBox::Slot()
-				.HAlign(HAlign_Center)
-				.AutoHeight()
-				[
-					Locals::MakeButton(LOCTEXT("UpButtonLabel", "Up"), FVector(0, 0, Factor))
-				]
-			+ SVerticalBox::Slot()
-				.HAlign(HAlign_Center)
-				.AutoHeight()
-				[
-					SNew(SHorizontalBox)
-					+ SHorizontalBox::Slot()
-					.AutoWidth()
-					[
-						Locals::MakeButton(LOCTEXT("LeftButtonLabel", "Left"), FVector(0, -Factor, 0))
-					]
-					+ SHorizontalBox::Slot()
-						.AutoWidth()
-						[
-							Locals::MakeButton(LOCTEXT("RightButtonLabel", "Right"), FVector(0, Factor, 0))
-						]
-				]
-			+ SVerticalBox::Slot()
-				.HAlign(HAlign_Center)
-				.AutoHeight()
-				[
-					Locals::MakeButton(LOCTEXT("DownButtonLabel", "Down"), FVector(0, 0, -Factor))
-				]
 
 			//--------------------------------------------------------------------------------------
-
+			/*
 			+ SVerticalBox::Slot()
 				.AutoHeight()
 				[
@@ -141,7 +164,7 @@ void FMazeEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 							.ButtonColorAndOpacity(FLinearColor(1.0f, 1.0f, 1.0f, 0.0f))
 							.Text(FText::FromString("Roombased"))
 							.ForegroundColor(FLinearColor(255.0f, 255.0f, 255.0f, 1.0f))
-							//.OnPressed() || .OnClicked()
+							.OnClicked(this, &FMazeEdModeToolkit::OnClickedRoombasedMode)
 						]
 
 						+ SVerticalBox::Slot()
@@ -153,34 +176,43 @@ void FMazeEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 							.ButtonColorAndOpacity(FLinearColor(1.0f, 1.0f, 1.0f, 0.0f))
 							.Text(FText::FromString("Cavebased"))
 							.ForegroundColor(FLinearColor(255.0f, 255.0f, 255.0f, 1.0f))
-							//.OnPressed() || .OnClicked()
+							.OnClicked(this, &FMazeEdModeToolkit::OnClickedCavebasedMode)
 						]
 					]
 				]
-					
-				/*
-					SNew(SComboButton)
-					.HasDownArrow(false)
-				.ButtonStyle(FEditorStyle::Get(), "HoverHintOnly")
-				.ForegroundColor(FSlateColor::UseForeground())
-				.ContentPadding(FMargin(5, 2))
-				.HAlign(HAlign_Center)
-				.VAlign(VAlign_Center)
-				.ButtonContent()
-				[
-					SNew(SHorizontalBox)
 
-					+ SHorizontalBox::Slot()
-				.AutoWidth()
-				.VAlign(VAlign_Center)
-				.Padding(FMargin(0, 0, 2, 0))
+				*/
+
+			+ SVerticalBox::Slot()
+				.AutoHeight()
+				.HAlign(HAlign_Center)
+				.Padding(10)
 				[
-					SNew(SImage)
-					.ColorAndOpacity(FSlateColor::UseForeground())
-				.Image(FEditorStyle::GetBrush("Plus"))
+					SNew(SButton)
+					.Text(FText::FromString("Create Roombased Maze"))
+				.OnClicked(this, &FMazeEdModeToolkit::OnClickedRoombasedMode)
 				]
-				] */
-							
+
+			+ SVerticalBox::Slot()
+				.AutoHeight()
+				.HAlign(HAlign_Center)
+				.Padding(10)
+				[
+					SNew(SButton)
+					.Text(FText::FromString("Create Cavebased Maze"))
+					.OnClicked(this, &FMazeEdModeToolkit::OnClickedCavebasedMode)
+				]		
+
+			+ SVerticalBox::Slot()
+				.AutoHeight()
+				.HAlign(HAlign_Center)
+				.Padding(10)
+				[
+					SNew(SButton)
+					.Text(FText::FromString("Spawn an AI enemy."))
+				    .OnClicked(this, &FMazeEdModeToolkit::InstantiateNewObject)
+				]
+
 		];
 		
 	FModeToolkit::Init(InitToolkitHost);

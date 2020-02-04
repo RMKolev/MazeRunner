@@ -2,6 +2,7 @@
 
 
 #include "TestUI.h"
+#include "Logging/LogVerbosity.h"
 
 // Sets default values
 ATestUI::ATestUI()
@@ -37,6 +38,8 @@ void ATestUI::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
-	UE_LOG(TOPDOWNARPG_API, Log, Text("A property was changed."));
+	FString ChangedProperty = PropertyChangedEvent.Property->GetFName().ToString();
+
+	UE_LOG(LogTemp, Warning, TEXT("A property was changed: %s"), *ChangedProperty);
 }
 
