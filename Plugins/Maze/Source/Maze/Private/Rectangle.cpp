@@ -1,65 +1,65 @@
 #include "../Public/Rectangle.h"
 
-FRectangle::FRectangle(int x, int y, int width, int height) : topLeft(x, y), width(width), height(height) {
+FRectangle::FRectangle(int X, int Y, int Width, int Height) : TopLeft(X, Y), Width(Width), Height(Height) {
 }
-int FRectangle::clamp(int v, int lo, int hi) {
-	if (lo > hi) Swap<int>(lo, hi);
-	return (v < lo) ? lo : (hi < v) ? hi : v;
+int FRectangle::Clamp(int V, int Lo, int Hi) {
+	if (Lo > Hi) Swap<int>(Lo, Hi);
+	return (V < Lo) ? Lo : (Hi < V) ? Hi : V;
 }
-MazePoint FRectangle::getBottomLeft() const {
-	return MazePoint(topLeft.x + width, topLeft.y + height);
+FIntPoint FRectangle::GetBottomLeft() const {
+	return FIntPoint(TopLeft.X + Width, TopLeft.Y + Height);
 }
-bool FRectangle::intersectsWith(const FRectangle& r) const
+bool FRectangle::IntersectsWith(const FRectangle& R) const
 {
 
-	return !(topLeft.x + width <= r.topLeft.x ||
-		topLeft.y + height <= r.topLeft.y ||
-		topLeft.x >= r.topLeft.x + r.width ||
-		topLeft.y >= r.topLeft.y + r.height);
+	return !(TopLeft.X + Width <= R.TopLeft.X ||
+		TopLeft.Y + Height <= R.TopLeft.Y ||
+		TopLeft.X >= R.TopLeft.X + R.Width ||
+		TopLeft.Y >= R.TopLeft.Y + R.Height);
 }
-MazePoint FRectangle::getNearestPointFrom(const FRectangle& r) const
+FIntPoint FRectangle::GetNearestPointFrom(const FRectangle& R) const
 {
-	int newXR2 = clamp(topLeft.x, r.topLeft.x, r.topLeft.x + r.width - 1);
-	int newYR2 = clamp(topLeft.y, r.topLeft.y, r.topLeft.y + r.height - 1);
-	return MazePoint(newXR2, newYR2);
+	int NewXR2 = Clamp(TopLeft.X, R.TopLeft.X, R.TopLeft.X + R.Width - 1);
+	int NewYR2 = Clamp(TopLeft.Y, R.TopLeft.Y, R.TopLeft.Y + R.Height - 1);
+	return FIntPoint(NewXR2, NewYR2);
 }
 
-MazePoint FRectangle::getNearestPointTo(const FRectangle& r) const
+FIntPoint FRectangle::GetNearestPointTo(const FRectangle& r) const
 {
-	MazePoint p = getNearestPointFrom(r);
+	FIntPoint P = GetNearestPointFrom(r);
 
-	int newXR1 = clamp(p.x, topLeft.x, topLeft.x + width - 1);
-	int newYR1 = clamp(p.y, topLeft.y, topLeft.y + height - 1);
+	int NewXR1 = Clamp(P.X, TopLeft.X, TopLeft.X + Width - 1);
+	int NewYR1 = Clamp(P.Y, TopLeft.Y, TopLeft.Y + Height - 1);
 
-	return MazePoint(newXR1, newYR1);
+	return FIntPoint(NewXR1, NewYR1);
 }
-uint64 FRectangle::getDistanceSquaredTo(FRectangle r2) const
+uint64 FRectangle::GetDistanceSquaredTo(FRectangle R2) const
 {
-	return MazePoint::getDistanceSquared(getNearestPointTo(r2), getNearestPointFrom(r2));
+	return (GetNearestPointTo(R2) - GetNearestPointFrom(R2)).SizeSquared();
 }
-uint64 FRectangle::getDistanceToCenterSquared() const
+uint64 FRectangle::GetDistanceToCenterSquared() const
 {
-	return (int64_t)topLeft.x * topLeft.x + (int64_t)topLeft.y * topLeft.y;
-}
-
-bool FRectangle::operator<(const FRectangle r2) const {
-	return getDistanceToCenterSquared() < r2.getDistanceToCenterSquared();
-}
-bool FRectangle::operator<=(const FRectangle r2) const {
-	return getDistanceToCenterSquared() <= r2.getDistanceToCenterSquared();
+	return (int64_t)TopLeft.X * TopLeft.X + (int64_t)TopLeft.Y * TopLeft.Y;
 }
 
-bool FRectangle::containsPoint(const MazePoint& p1) const
-{
-	return p1.x >= topLeft.x && p1.x <= topLeft.x + width - 1 &&
-		p1.y >= topLeft.y && p1.y <= topLeft.y + height - 1;
+bool FRectangle::operator<(const FRectangle R2) const {
+	return GetDistanceToCenterSquared() < R2.GetDistanceToCenterSquared();
 }
-FRectangle FRectangle::getIntersectionRectangle(const FRectangle& r2) const {
-	if (!intersectsWith(r2)) return FRectangle(0, 0, -1, -1);
-	MazePoint p1 = getNearestPointFrom(r2);
-	MazePoint r2Down = r2.getBottomLeft();
-	if (containsPoint(r2Down)) {
-		return FRectangle(p1.x, p1.y, r2Down.x - p1.x, r2Down.y - p1.y);
+bool FRectangle::operator<=(const FRectangle R2) const {
+	return GetDistanceToCenterSquared() <= R2.GetDistanceToCenterSquared();
+}
+
+bool FRectangle::ContainsPoint(const FIntPoint& P) const
+{
+	return P.X >= TopLeft.X && P.X <= TopLeft.X + Width - 1 &&
+		P.Y >= TopLeft.Y && P.Y <= TopLeft.Y + Height - 1;
+}
+FRectangle FRectangle::GetIntersectionRectangle(const FRectangle& R) const {
+	if (!IntersectsWith(R)) return FRectangle(0, 0, -1, -1);
+	FIntPoint P1 = GetNearestPointFrom(R);
+	FIntPoint R2Down = R.GetBottomLeft();
+	if (ContainsPoint(R2Down)) {
+		return FRectangle(P1.X, P1.Y, R2Down.X - P1.X, R2Down.Y - P1.Y);
 	}
-	return FRectangle(p1.x, p1.y, topLeft.x + width - p1.x, topLeft.y + height - p1.y);
+	return FRectangle(P1.X, P1.Y, TopLeft.X + Width - P1.X, TopLeft.Y + Height - P1.Y);
 }

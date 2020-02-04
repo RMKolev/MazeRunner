@@ -6,6 +6,8 @@
 #define LOCTEXT_NAMESPACE "FMazeModule"
 DECLARE_LOG_CATEGORY_EXTERN(CategoryName, DefaultVerbosity, CompileTimeVerbosity);
 
+DEFINE_LOG_CATEGORY(Maze);
+
 void FMazeModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
