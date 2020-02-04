@@ -3,9 +3,9 @@
 
 #include "BlockBuilder.h"
 #include "Maze.h"
-#include "MazeActor.h"
 #include "Engine/World.h"
 #include "Components/InstancedStaticMeshComponent.h"
+#include "CaveGeneration.h"
 
 // Sets default values
 ABlockBuilder::ABlockBuilder()
@@ -22,22 +22,22 @@ void ABlockBuilder::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	UE_LOG(Maze, Error, TEXT("ABlockBuilder::ABlockBuilder() Can i haz log?"));
+	//UE_LOG(Maze, Error, TEXT("ABlockBuilder::ABlockBuilder() Can i haz log?"));
 
-	UWorld* World = GetWorld();
-	if (IsValid(World) == false)
-	{
-		UE_LOG(Maze, Error, TEXT("ABlockBuilder::ABlockBuilder() IsValid(World) == false"));
-	}
+	//UWorld* World = GetWorld();
+	//if (IsValid(World) == false)
+	//{
+	//	UE_LOG(Maze, Error, TEXT("ABlockBuilder::ABlockBuilder() IsValid(World) == false"));
+	//}
 
-	FActorSpawnParameters SpawnParameters;
+	/*FActorSpawnParameters SpawnParameters;
 	SpawnParameters.Owner = this;
-	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;*/
 
 	const int rows = 72;
 	const int cols = 129;
 
-	char maze[rows][cols] = {   "################################################################################################################################",
+	/*char maze[rows][cols] = {   "################################################################################################################################",
 								"#####__#####_____##############################___#######################__####################################___##############",
 								"####______________#############__#######___###_______#####_____####__###____###____###########################_____####__#######",
 								"####_______________##_########____#####______________#####______##_________________#########____##############_____###____######",
@@ -109,8 +109,12 @@ void ABlockBuilder::BeginPlay()
 								"########__________###___###########______#########____######################___########___#######____######___##################",
 								"###################################################__#############################################__############################",
 								"################################################################################################################################" };
+	*/
+	FCaveGeneration CaveGen(0, rows, cols, 45, 5);
+	CaveGen.GenerateCave();
 	
-
+	TArray<TArray<char>> maze;
+	CaveGen.ToAMazeRoom(maze);
 
 	//if (!IsValid(WallActorClass))
 	//{
@@ -145,7 +149,7 @@ void ABlockBuilder::BeginPlay()
 	//}
 	for (int i = 0; i < rows; i++)
 	{
-		for (int j = 0; maze[i][j] != '\0'; j++)
+		for (int j = 0; j < cols; j++)
 		{
 			FVector SpawnLocation = /*GetActorLocation() +*/ FVector(i * SideOfCubeAtScaleOne * ScaleForAllMeshes.X, 
 																j * SideOfCubeAtScaleOne * ScaleForAllMeshes.Y, 0);

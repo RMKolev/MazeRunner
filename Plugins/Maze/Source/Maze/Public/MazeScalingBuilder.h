@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "MazeBuilder.h"
 #include "MazeRoom.h"
-//#include "Rectangle.h"
 #include "MazeScalingBuilder.generated.h"
 
 USTRUCT()
@@ -13,11 +12,13 @@ struct FMazeRoomParameters {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
-		FString templateName;
+		FString TemplateName;
 	UPROPERTY(EditAnywhere)
-		FIntPoint coordinates;
+		FIntPoint Coordinates;
 	UPROPERTY(EditAnywhere)
-		FIntPoint templateScale;
+		FIntPoint TemplateScale;
+	UPROPERTY(EditAnywhere)
+		TArray<FIntPoint> ExitPoints;
 };
 /**
  * 
@@ -28,9 +29,9 @@ class MAZE_API AMazeScalingBuilder : public AMazeBuilder
 	GENERATED_BODY()
 private:
 	UPROPERTY(EditAnywhere)
-	TArray<TSubclassOf<AMazeRoom>> roomTemplates;
+	TArray<TSubclassOf<AMazeRoom>> RoomTemplates;
 	UPROPERTY(EditAnywhere)
-	TArray<FMazeRoomParameters> rooms;
+	TArray<FMazeRoomParameters> Rooms;
 protected:
 	virtual void BeginPlay() override;
 public:

@@ -17,15 +17,15 @@ AMazeBuilder::AMazeBuilder()
 void AMazeBuilder::BeginPlay()
 {
 	Super::BeginPlay();
-	this->world = GetWorld();
-	if (!IsValid(world)) {
-		UE_LOG(Maze, Error, TEXT("AMazeBuilder::BeginPlay() world == nullptr"));
+	this->World = GetWorld();
+	if (!IsValid(World)) {
+		UE_LOG(Maze, Error, TEXT("AMazeBuilder::BeginPlay() World == nullptr"));
 	}
 
-	for (auto instance : assets) {
-		auto val = NewObject<UInstancedStaticMeshComponent>(this, instance.Value);
-		val->RegisterComponent();
-		instanceMeshes.Add(instance.Key, val);
+	for (auto Instance : Assets) {
+		auto Val = NewObject<UInstancedStaticMeshComponent>(this, Instance.Value);
+		Val->RegisterComponent();
+		InstanceMeshes.Add(Instance.Key, Val);
 	}
 }
 
@@ -34,5 +34,11 @@ void AMazeBuilder::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AMazeBuilder::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	this->InstanceMeshes.Empty();
+	Super::EndPlay(EndPlayReason);
 }
 

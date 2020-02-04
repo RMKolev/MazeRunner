@@ -28,11 +28,11 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	FVector ScaleForAllMeshes;
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class AMazeActor> WallActorClass;
+	//UPROPERTY(EditDefaultsOnly)
+	//TSubclassOf<class AMazeActor> WallActorClass;
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class AMazeActor> FloorActorClass;
+	//UPROPERTY(EditDefaultsOnly)
+	//TSubclassOf<class AMazeActor> FloorActorClass;
 
 	UPROPERTY(EditDefaultsOnly)
 	class UInstancedStaticMeshComponent* WallInstancedMesh;
