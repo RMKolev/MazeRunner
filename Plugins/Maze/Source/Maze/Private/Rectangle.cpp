@@ -1,6 +1,11 @@
 #include "../Public/Rectangle.h"
 
-FRectangle::FRectangle(int X, int Y, int Width, int Height) : TopLeft(X, Y), Width(Width), Height(Height) {
+FRectangle::FRectangle(int32 X, int32 Y, int32 Width, int32 Height) : TopLeft(X, Y), Width(Width), Height(Height) {
+}
+FString FRectangle::ToString()
+{
+	return FString("Rectangle: TopLeft:(" + FString::FromInt(this->TopLeft.X) + "," + FString::FromInt(this->TopLeft.Y) 
+		+ "), Width:"+ FString::FromInt(Width) + ", Height:" + FString::FromInt(Height)) ;
 }
 int FRectangle::Clamp(int V, int Lo, int Hi) {
 	if (Lo > Hi) Swap<int>(Lo, Hi);
