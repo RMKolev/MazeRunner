@@ -25,7 +25,7 @@ void AMazeBuilder::BeginPlay()
 	for (auto Instance : Assets) {
 		auto Val = NewObject<UInstancedStaticMeshComponent>(this, Instance.Value);
 		Val->RegisterComponent();
-		InstanceMeshes.Add(Instance.Key, Val);
+		//InstanceMeshes.Add(Instance.Key, Val);
 	}
 }
 

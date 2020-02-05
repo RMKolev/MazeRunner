@@ -23,15 +23,18 @@ protected:
 		uint64 WorldSeed;
 	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
 		bool bUseCustomSeed;
-
 	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
 		int32 NumberOfRooms;
 	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
 		FIntPoint MinimalRoomScale;
 	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
 		FIntPoint MaximumRoomScale;
+	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
+		FIntPoint StartingResolution = FIntPoint(50,50); // DO NOT, I REPEAT, DO NOT MAKE IT 0.
+	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
+		FVector2D ResolutionStep = FVector2D(1.3,1.3);
 
-		TArray<TArray<int32>> Maze;
+		TArray<TArray<int8>> MazeScheme;
 	UPROPERTY()
 	FRandomStream RStream;
 
@@ -41,11 +44,12 @@ public:
 	void MakeYTunnel(int32, int32, int32);
 	void FillPath(FIntPoint, FIntPoint);
 	void FillRoom(const FRectangle&);
+	void LogMazeScheme() const;
 	TArray<FRectangle> GenerateMazeRooms();
 	TArray<TArray<char>> GetMaze() const;
 	TArray<TArray<char>> GetPaths() const;
 	TArray<TArray<char>> GetRooms() const;
-	FRectangle GetRandomRectangle(FIntPoint );
+	FRectangle GetRandomRectangle(FIntPoint) const;
 	TArray <TArray<TPair<int32, uint64>>> MakeWeighedGraph(TArray<FRectangle>&, int32 = 42);
 	TArray<TPair<TPair<int32, int32>, uint64>> GetApproximateMinimalSpanTreeGraph(TArray<FRectangle>& rectangles, int32 neighborLimit = 42);
 	// Called every frame

@@ -8,11 +8,6 @@
 void AMazeScalingBuilder::BeginPlay()
 {
 	Super::BeginPlay();
-	for (auto Room : Rooms) {
-			UE_LOG(Maze, Log, TEXT("AMazeScalingBuilder::BeginPlay() ForEach"));
-			BuildSingleRoom(Room);
-	}
-
 }
 
 void AMazeScalingBuilder::BuildMaze()
@@ -20,6 +15,7 @@ void AMazeScalingBuilder::BuildMaze()
 	// TO DO;
 }
 
+/*
 void AMazeScalingBuilder::BuildSingleRoom(const FMazeRoomParameters& Room) const
 {
 	UE_LOG(Maze, Error, TEXT("AMazeScalingBuilder::BuildSingleRoom(TSubclassOf<AMazeRoom> Room) in func"))
@@ -52,4 +48,4 @@ void AMazeScalingBuilder::BuildSingleRoom(const FMazeRoomParameters& Room) const
 			}
 		}
 	}
-}
+}*/

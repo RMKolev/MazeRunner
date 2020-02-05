@@ -17,10 +17,10 @@ FIntPoint FRectangle::GetBottomLeft() const {
 bool FRectangle::IntersectsWith(const FRectangle& R) const
 {
 
-	return !(TopLeft.X + Width <= R.TopLeft.X ||
-		TopLeft.Y + Height <= R.TopLeft.Y ||
-		TopLeft.X >= R.TopLeft.X + R.Width ||
-		TopLeft.Y >= R.TopLeft.Y + R.Height);
+	return !(TopLeft.X + Width < R.TopLeft.X ||
+		TopLeft.Y + Height < R.TopLeft.Y ||
+		TopLeft.X > R.TopLeft.X + R.Width ||
+		TopLeft.Y > R.TopLeft.Y + R.Height);
 }
 FIntPoint FRectangle::GetNearestPointFrom(const FRectangle& R) const
 {

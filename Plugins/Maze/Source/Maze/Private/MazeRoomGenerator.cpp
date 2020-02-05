@@ -18,9 +18,31 @@ void AMazeRoomGenerator::BeginPlay()
 	if (!this->bUseCustomSeed) {
 		RStream.GenerateNewSeed();
 	}
-	auto Rooms = GenerateMazeRooms();
-	//auto Graph = MakeWeighedGraph(Rooms);
-	auto T = GetApproximateMinimalSpanTreeGraph(Rooms,5);
+	if (StartingResolution.X < 5 || StartingResolution.Y < 5) {
+		UE_LOG(Maze, Error, TEXT("MazeRoomGenerator: Starting Resolution dimensions cannot be less than 5, setting the faulty dimention to 50"));
+		if (StartingResolution.X < 5)
+		{
+			StartingResolution.X = 5;
+		}
+		if (StartingResolution.Y < 5)
+		{
+			StartingResolution.Y = 5;
+		}
+	}
+	UE_LOG(Maze, Error, TEXT("%f"), StartingResolution.X);
+	if ( ResolutionStep.X < 1.2f) {
+		UE_LOG(Maze, Error, TEXT("MazeRoomGenerator: Resolution Step for X is too small, setting Resolution Step on X to 1.2"));
+		ResolutionStep.X = 1.2f;
+	}
+	UE_LOG(Maze, Error, TEXT("%f"), StartingResolution.X);
+	UE_LOG(Maze, Error, TEXT("%f"), StartingResolution.Y);
+	if ( ResolutionStep.Y < 1.2f) {
+		UE_LOG(Maze, Error, TEXT("MazeRoomGenerator: Resolution Step for Y is too small, setting Resolution Step on Y to 1.2"));
+		ResolutionStep.Y = 1.2f;
+	}
+	UE_LOG(Maze, Error, TEXT("%f"), StartingResolution.Y);
+	BuildMaze();
+	LogMazeScheme();
 }
 
 void AMazeRoomGenerator::BuildMaze()
@@ -44,8 +66,8 @@ void AMazeRoomGenerator::MakeXTunnel(int32 YCoord, int32 X1, int32 X2)
 		Swap(X1, X2);
 	}
 	for (int X = X1; X <= X2; ++X) {
-		if (Maze[YCoord][X] == 0)
-			Maze[YCoord][X] = 'p';
+		if (MazeScheme[YCoord][X] == 0)
+			MazeScheme[YCoord][X] = 'p';
 	}
 }
 
@@ -55,8 +77,8 @@ void AMazeRoomGenerator::MakeYTunnel(int32 XCoord, int32 Y1, int32 Y2)
 		Swap(Y1, Y2);
 	}
 	for (int Y = Y1; Y <= Y2; ++Y) {
-		if (Maze[Y][XCoord] == 0)
-			Maze[Y][XCoord] = 'p';
+		if (MazeScheme[Y][XCoord] == 0)
+			MazeScheme[Y][XCoord] = 'p';
 	}
 }
 
@@ -78,18 +100,36 @@ void AMazeRoomGenerator::FillRoom(const FRectangle& R)
 {
 	for (int i = 0; i < R.GetWidth(); ++i) {
 		for (int j = 0; j < R.GetHeight(); ++j) {
-			Maze[j + R.GetTopLeft().Y][i + R.GetTopLeft().X] = 'r';
+			MazeScheme[j + R.GetTopLeft().Y][i + R.GetTopLeft().X] = 'r';
 		}
 	}
+}
+
+void AMazeRoomGenerator::LogMazeScheme() const
+{
+	FString LoggingScheme;
+	LoggingScheme.AppendChar('t');
+	LoggingScheme.AppendChar('\n');
+	for (auto MazeRow : MazeScheme) {
+		for (auto MazeCell : MazeRow) {
+			if (MazeCell != 0)
+				LoggingScheme.AppendChar(MazeCell);
+			else
+				LoggingScheme.AppendChar(' ');
+		}
+		LoggingScheme.AppendChar('\n');
+	}
+	UE_LOG(Maze, Warning, TEXT("\n%s"), *LoggingScheme);
 }
 
 TArray<FRectangle> AMazeRoomGenerator::GenerateMazeRooms()
 {
 	TArray<FRectangle> Rooms;
-	FIntPoint MazeResolution(100, 100);
+
+	FIntPoint MazeResolution = StartingResolution;
 	int32 NumberOfTries = this->NumberOfRooms*3;
-	while (Rooms.Num()<this->NumberOfRooms) {
-		for (int i = NumberOfTries; i > 0 && Rooms.Num()<this->NumberOfRooms; --i) {
+	while (this->NumberOfRooms > Rooms.Num()) {
+		for (int32 i = NumberOfTries; i > 0 && Rooms.Num()<this->NumberOfRooms; --i) {
 			FRectangle NewRectangle = GetRandomRectangle(MazeResolution);
 			bool bIntersects = false;
 			for (auto OldRoom : Rooms) {
@@ -103,20 +143,21 @@ TArray<FRectangle> AMazeRoomGenerator::GenerateMazeRooms()
 			}
 		}
 		if (Rooms.Num() < this->NumberOfRooms) {
-			MazeResolution.X *= 1.5;
-			MazeResolution.Y *= 1.5;
+			MazeResolution.X *= ResolutionStep.X;
+			MazeResolution.Y *= ResolutionStep.Y;
+
 		}
 	}
-	Maze = TArray<TArray<int32>>();
-	Maze.SetNumZeroed(MazeResolution.Y);
-	for (auto MazeRow : Maze) {
-		MazeRow.SetNumZeroed(MazeResolution.X);
+	MazeScheme = TArray<TArray<int8>>();
+	MazeScheme.SetNum(MazeResolution.Y);
+	for (int i = 0; i < MazeScheme.Num(); ++i) {
+		MazeScheme[i].SetNumZeroed(MazeResolution.X);
 	}
-	//UE_LOG(Maze, Warning, TEXT("Successfully created a maze with %d rooms ,maze width %d,maze height %d"), Rooms.Num(), MazeResolution.X, MazeResolution.Y);
+	//UE_LOG(MazeScheme, Warning, TEXT("Successfully created a maze with %d rooms ,maze width %d,maze height %d"), Rooms.Num(), MazeResolution.X, MazeResolution.Y);
 	return Rooms;
 }
 
-FRectangle AMazeRoomGenerator::GetRandomRectangle(FIntPoint CurrentMazeSize)
+FRectangle AMazeRoomGenerator::GetRandomRectangle(FIntPoint CurrentMazeSize) const
 {
 	int32 Width = RStream.RandRange(MinimalRoomScale.X, MaximumRoomScale.X);
 	int32 Height = RStream.RandRange(MinimalRoomScale.Y, MaximumRoomScale.Y);
@@ -140,11 +181,13 @@ TArray<TArray<TPair<int32,uint64>>> AMazeRoomGenerator::MakeWeighedGraph(TArray<
 		}
 	}
 	int i = 0;
-	for (auto P : Result) {
+	/*for (auto P : Result) {
+		UE_LOG(Maze, Warning, TEXT("From Rib: %d"), i);
 		for (auto T : P) {
+			UE_LOG(Maze, Warning, TEXT("To rib %d -> %d"), T.Key, T.Value);
 		}
 		++i;
-	}
+	}*/
 	return Result;
 }
 
@@ -169,7 +212,7 @@ TArray<TPair<TPair<int32, int32>, uint64>> AMazeRoomGenerator::GetApproximateMin
 					if (!bVisited && (NewRib.Value > RibK.Value || (NewRib.Key.Key == -1))) {
 						int32 NewDest = RibK.Key;
 						uint64 NewWeight = RibK.Value;
-						NewRib = TPair<TPair<int32, int32>, uint64>(TPair< int32, int32>(i, NewDest), NewWeight);
+						NewRib = TPair<TPair<int32, int32>, uint64>(TPair< int32, int32>(Indexes[i], NewDest), NewWeight);
 					}
 				}
 			}
@@ -180,7 +223,7 @@ TArray<TPair<TPair<int32, int32>, uint64>> AMazeRoomGenerator::GetApproximateMin
 		}
 	}
 	for (TPair<TPair<int32, int32>, uint64> K : MST) {
-		//UE_LOG(Maze, Warning, TEXT("%d -> %d : %d"), K.Key.Key, K.Key.Value, K.Value);
+		UE_LOG(Maze, Warning, TEXT("%d -> %d : %d"), K.Key.Key, K.Key.Value, K.Value);
 	}
 	return MST;
 }
