@@ -75,7 +75,7 @@ void AMazeRoomGenerator::MakeXTunnel(int32 YCoord, int32 X1, int32 X2)
 	for (int X = X1; X <= X2; ++X)
 	{
 		if (MazeScheme[YCoord][X] == 0)
-			MazeScheme[YCoord][X] = 'p';
+			MazeScheme[YCoord][X] = 2;
 	}
 }
 
@@ -88,7 +88,7 @@ void AMazeRoomGenerator::MakeYTunnel(int32 XCoord, int32 Y1, int32 Y2)
 	for (int Y = Y1; Y <= Y2; ++Y)
 	{
 		if (MazeScheme[Y][XCoord] == 0)
-			MazeScheme[Y][XCoord] = 'p';
+			MazeScheme[Y][XCoord] = 2;
 	}
 }
 
@@ -115,7 +115,7 @@ void AMazeRoomGenerator::FillRoom(const FRectangle& R)
 	{
 		for (int j = 0; j < R.GetHeight(); ++j)
 		{
-			MazeScheme[j + R.GetTopLeft().Y][i + R.GetTopLeft().X] = 'r';
+			MazeScheme[j + R.GetTopLeft().Y][i + R.GetTopLeft().X] = 1;
 		}
 	}
 }
@@ -179,6 +179,11 @@ TArray<FRectangle> AMazeRoomGenerator::GenerateMazeRooms()
 	}
 	//UE_LOG(MazeScheme, Warning, TEXT("Successfully created a maze with %d rooms ,maze width %d,maze height %d"), Rooms.Num(), MazeResolution.X, MazeResolution.Y);
 	return Rooms;
+}
+
+TArray<TArray<int8>> AMazeRoomGenerator::GetMazeScheme() const
+{
+	return this->MazeScheme;
 }
 
 FRectangle AMazeRoomGenerator::GetRandomRectangle(FIntPoint CurrentMazeSize) const

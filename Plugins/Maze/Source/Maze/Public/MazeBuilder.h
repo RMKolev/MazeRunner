@@ -44,10 +44,10 @@ protected:
 	//A map for names when using a Character Matrix. 
 	//Associates every value with a Name of an InstanceMesh which then adds the component
 	UPROPERTY(EditAnywhere)
-		TMap<FName, int8> CharacterMap;
+		TMap<int8, FName> CharacterMap;
 	//All the Instance Meshes to be initialised. Each actor here will receive an instance stored in InstanceMeshes
 	UPROPERTY(EditAnywhere)
-		TMap<FString, TSubclassOf<UInstancedStaticMeshComponent>> Assets;
+		TMap<FName, TSubclassOf<UInstancedStaticMeshComponent>> Assets;
 	//Stores the InstancedStaticMeshComponents for quick retrieval
 	UPROPERTY()
 		TMap<FName, UInstancedStaticMeshComponent*> InstanceMeshes;

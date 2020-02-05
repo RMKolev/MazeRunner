@@ -46,7 +46,7 @@ public:
 	void FillRoom(const FRectangle&);
 	void LogMazeScheme() const;
 	TArray<FRectangle> GenerateMazeRooms();
-	TArray<TArray<char>> GetMaze() const;
+	TArray<TArray<int8>> GetMazeScheme() const;
 	TArray<TArray<char>> GetPaths() const;
 	TArray<TArray<char>> GetRooms() const;
 	FRectangle GetRandomRectangle(FIntPoint) const;
