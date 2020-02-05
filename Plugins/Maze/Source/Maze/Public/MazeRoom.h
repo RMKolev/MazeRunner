@@ -6,19 +6,21 @@
 #include "GameFramework/Actor.h"
 #include "MazeRoom.generated.h"
 USTRUCT()
-struct FMazeActorParameters {
+struct FMazeActorParameters
+{
 	GENERATED_BODY()
 
+		UPROPERTY(EditAnywhere)
+		FString Name;
 	UPROPERTY(EditAnywhere)
-	FString Name;
+		FIntVector Scale;
 	UPROPERTY(EditAnywhere)
-	FIntVector Scale;
-	UPROPERTY(EditAnywhere)
-	FIntPoint LocalCoordinates;
+		FIntPoint LocalCoordinates;
 	UPROPERTY(EditAnywhere)
 		bool bScale = true;
 	FMazeActorParameters(const FString& Name, const FIntVector& Scale, const FIntPoint& LocalCoordinates, bool bScale = true) :
-		Name(Name), Scale(Scale), LocalCoordinates(LocalCoordinates), bScale(bScale) {};
+		Name(Name), Scale(Scale), LocalCoordinates(LocalCoordinates), bScale(bScale)
+	{};
 	FMazeActorParameters() = default;
 };
 UCLASS()
@@ -37,7 +39,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	//virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	// Sets default values for this actor's properties

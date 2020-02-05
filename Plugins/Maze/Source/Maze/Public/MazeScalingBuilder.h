@@ -7,7 +7,7 @@
 #include "MazeRoom.h"
 #include "MazeScalingBuilder.generated.h"
 /**
- * 
+ *
  */
 UCLASS()
 class MAZE_API AMazeScalingBuilder : public AMazeBuilder

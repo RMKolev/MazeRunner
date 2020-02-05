@@ -9,10 +9,11 @@
 #include "MazeBuilder.generated.h"
 
 USTRUCT()
-struct FMazeBasis {
+struct FMazeBasis
+{
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
+		UPROPERTY(EditAnywhere)
 		FVector Start; //The position of 0,0 
 	UPROPERTY(EditAnywhere)
 		FVector Scale;
@@ -36,25 +37,25 @@ UCLASS()
 class MAZE_API AMazeBuilder : public AActor
 {
 	GENERATED_BODY()
-	
-protected:	
+
+protected:
 
 	UWorld* World;
 	//A map for names when using a Character Matrix. 
 	//Associates every value with a Name of an InstanceMesh which then adds the component
-	UPROPERTY(EditAnywhere) 
+	UPROPERTY(EditAnywhere)
 		TMap<FName, int8> CharacterMap;
 	//All the Instance Meshes to be initialised. Each actor here will receive an instance stored in InstanceMeshes
 	UPROPERTY(EditAnywhere)
-	TMap<FString,TSubclassOf<UInstancedStaticMeshComponent>> Assets;
+		TMap<FString, TSubclassOf<UInstancedStaticMeshComponent>> Assets;
 	//Stores the InstancedStaticMeshComponents for quick retrieval
 	UPROPERTY()
-	TMap<FName, UInstancedStaticMeshComponent*> InstanceMeshes;
+		TMap<FName, UInstancedStaticMeshComponent*> InstanceMeshes;
 	// Basis for the built Maze. Used for calculating the positions of all maze points (and actors)
 	UPROPERTY(EditAnywhere)
-	FMazeBasis Basis;
+		FMazeBasis Basis;
 	virtual void BeginPlay() override;
-public:	
+public:
 	// Function to build the maze. To be implemented in heirs of class.
 	virtual void BuildMaze() {};
 	// Called every frame
