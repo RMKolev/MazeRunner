@@ -5,10 +5,12 @@
 #include "CoreMinimal.h"
 #include "Rectangle.h"
 #include "GameFramework/Actor.h"
+#include "MazeBuilder.h"
+#include "MazeGenerator.h"
 #include "MazeRoomGenerator.generated.h"
 
 UCLASS()
-class MAZE_API AMazeRoomGenerator : public AActor
+class MAZE_API AMazeRoomGenerator : public AMazeGenerator
 {
 	GENERATED_BODY()
 
@@ -19,10 +21,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
-		uint64 WorldSeed;
-	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
-		bool bUseCustomSeed;
+
 	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
 		int32 NumberOfRooms;
 	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
@@ -34,9 +33,6 @@ protected:
 	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
 		FVector2D ResolutionStep = FVector2D(1.3, 1.3);
 
-	TArray<TArray<int8>> MazeScheme;
-	UPROPERTY()
-		FRandomStream RStream;
 
 public:
 	void BuildMaze();
@@ -44,11 +40,14 @@ public:
 	void MakeYTunnel(int32, int32, int32);
 	void FillPath(FIntPoint, FIntPoint);
 	void FillRoom(const FRectangle&);
-	void LogMazeScheme() const;
+	virtual void LogMazeScheme() const override;
+	void SetCharacterMap(const TMap<int8, FMazeProperties>&);
+
+	virtual TArray<TArray<int8>> GetMazeScheme() const override;
 	TArray<FRectangle> GenerateMazeRooms();
-	TArray<TArray<int8>> GetMazeScheme() const;
-	TArray<TArray<char>> GetPaths() const;
-	TArray<TArray<char>> GetRooms() const;
+	void BuildSurroundingWalls();
+	//TArray<TArray<char>> GetPaths() const;
+	//TArray<TArray<char>> GetRooms() const;
 	FRectangle GetRandomRectangle(FIntPoint) const;
 	TArray <TArray<TPair<int32, uint64>>> MakeWeighedGraph(TArray<FRectangle>&, int32 = 42);
 	TArray<TPair<TPair<int32, int32>, uint64>> GetApproximateMinimalSpanTreeGraph(TArray<FRectangle>& rectangles, int32 neighborLimit = 42);

@@ -7,6 +7,15 @@
 #include "MazeRoom.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "MazeBuilder.generated.h"
+USTRUCT()
+struct FMazeProperties
+{
+	GENERATED_BODY();
+	FName ComponentName;
+	FName InstanceMeshName;
+	FIntVector Scale;
+	int8 Id;
+};
 
 USTRUCT()
 struct FMazeBasis
@@ -16,7 +25,7 @@ struct FMazeBasis
 		UPROPERTY(EditAnywhere)
 		FVector Start; //The position of 0,0 
 	UPROPERTY(EditAnywhere)
-		FVector Scale;
+		FVector Scale; // Assumes 1 = 100cm in Unreal Units
 
 	FMazeBasis(FVector Start, FVector Scale) : Start(Start)
 	{
@@ -25,7 +34,7 @@ struct FMazeBasis
 	FMazeBasis() :FMazeBasis(FVector(0, 0, 0), FVector(100, 100, 100)) {};
 	FVector GetMazePointLocation(FIntPoint Mp) const
 	{
-		return Start + FVector(Mp.X + 0.5, Mp.Y + 0.5, 0) * Scale;
+		return Start + FVector(Mp.X + 0.5, Mp.Y + 0.5, 0) * (Scale*100);
 	}
 	FVector GetMazeActorLocation(FIntPoint Mp, const FIntVector ActorScale) const
 	{

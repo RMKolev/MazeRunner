@@ -68,6 +68,7 @@ void AMazeRoomGenerator::BuildMaze()
 
 void AMazeRoomGenerator::MakeXTunnel(int32 YCoord, int32 X1, int32 X2)
 {
+	int8 PathCharacter = CharacterMap.FindChecked(FName("Path"));
 	if (X1 > X2)
 	{
 		Swap(X1, X2);
@@ -75,12 +76,13 @@ void AMazeRoomGenerator::MakeXTunnel(int32 YCoord, int32 X1, int32 X2)
 	for (int X = X1; X <= X2; ++X)
 	{
 		if (MazeScheme[YCoord][X] == 0)
-			MazeScheme[YCoord][X] = 2;
+			MazeScheme[YCoord][X] = PathCharacter;
 	}
 }
 
 void AMazeRoomGenerator::MakeYTunnel(int32 XCoord, int32 Y1, int32 Y2)
 {
+	int8 PathCharacter = CharacterMap.FindChecked(FName("Path"));
 	if (Y1 > Y2)
 	{
 		Swap(Y1, Y2);
@@ -88,12 +90,17 @@ void AMazeRoomGenerator::MakeYTunnel(int32 XCoord, int32 Y1, int32 Y2)
 	for (int Y = Y1; Y <= Y2; ++Y)
 	{
 		if (MazeScheme[Y][XCoord] == 0)
-			MazeScheme[Y][XCoord] = 2;
+			MazeScheme[Y][XCoord] = PathCharacter;
 	}
 }
 
 void AMazeRoomGenerator::FillPath(FIntPoint P1, FIntPoint P2)
 {
+	if (!CharacterMap.Contains(FName("Path")))
+	{
+		UE_LOG(Maze, Error, TEXT("MazeRoomGenerator:FillPath - No character for Path"));
+		return;
+	}
 	int flip = rand() % 2;
 	if (flip)
 	{
@@ -111,11 +118,17 @@ void AMazeRoomGenerator::FillPath(FIntPoint P1, FIntPoint P2)
 
 void AMazeRoomGenerator::FillRoom(const FRectangle& R)
 {
+	if (!CharacterMap.Contains(FName("Floor")))
+	{
+		UE_LOG(Maze,Error,TEXT("MazeRoomGenerator:FillRoom - No character for room Floors"));
+		return;
+	}
+	int8 FloorCharacter = CharacterMap.FindChecked(FName("Floor"));
 	for (int i = 0; i < R.GetWidth(); ++i)
 	{
 		for (int j = 0; j < R.GetHeight(); ++j)
 		{
-			MazeScheme[j + R.GetTopLeft().Y][i + R.GetTopLeft().X] = 1;
+			MazeScheme[j + R.GetTopLeft().Y][i + R.GetTopLeft().X] = FloorCharacter;
 		}
 	}
 }
@@ -130,13 +143,28 @@ void AMazeRoomGenerator::LogMazeScheme() const
 		for (auto MazeCell : MazeRow)
 		{
 			if (MazeCell != 0)
-				LoggingScheme.AppendChar(MazeCell);
+				LoggingScheme.AppendChar(MazeCell+'a');
 			else
 				LoggingScheme.AppendChar(' ');
 		}
 		LoggingScheme.AppendChar('\n');
 	}
 	UE_LOG(Maze, Warning, TEXT("\n%s"), *LoggingScheme);
+}
+
+void AMazeRoomGenerator::SetCharacterMap(const TMap<int8, FMazeProperties>& Map)
+{
+	for (auto MapItem : Map)
+	{
+		if (this->CharacterMap.Contains(MapItem.Value.ComponentName))
+		{
+			UE_LOG(Maze, Error, TEXT("MazeRoomGenerator:SetCharacterMap - There is already a component with the same name in the map! (%s)"), *MapItem.Value.ComponentName.ToString());
+		}
+		else
+		{
+			this->CharacterMap.Add(MapItem.Value.ComponentName, MapItem.Value.Id);
+		}
+	}
 }
 
 TArray<FRectangle> AMazeRoomGenerator::GenerateMazeRooms()
@@ -175,7 +203,11 @@ TArray<FRectangle> AMazeRoomGenerator::GenerateMazeRooms()
 	MazeScheme.SetNum(MazeResolution.Y);
 	for (int i = 0; i < MazeScheme.Num(); ++i)
 	{
-		MazeScheme[i].SetNumZeroed(MazeResolution.X);
+		MazeScheme[i].SetNum(MazeResolution.X);
+		for (int j = 0; j < MazeScheme.Num(); ++j)
+		{
+			MazeScheme[i][j] = 0;
+		}
 	}
 	//UE_LOG(MazeScheme, Warning, TEXT("Successfully created a maze with %d rooms ,maze width %d,maze height %d"), Rooms.Num(), MazeResolution.X, MazeResolution.Y);
 	return Rooms;
@@ -186,12 +218,50 @@ TArray<TArray<int8>> AMazeRoomGenerator::GetMazeScheme() const
 	return this->MazeScheme;
 }
 
+void AMazeRoomGenerator::BuildSurroundingWalls()
+{
+	if (!CharacterMap.Contains(FName("Wall")))
+	{
+		UE_LOG(Maze, Error, TEXT("MazeRoomGenerator:BuildSurroundingWalls - No character for room walls"));
+		return;
+	}
+	int8 WallCharacter = CharacterMap.FindChecked(FName("Wall"));
+	for (int i = 0; i < MazeScheme.Num(); ++i)
+	{
+		for (int j = 0; j < MazeScheme.Num(); ++j)
+		{
+			if (MazeScheme[i][j] == 0)
+			{
+				bool bFill = false;
+				// For Cycle allows skipping 8 if checks. It just looks big cus of the brackets.
+				for (int k = i - 1; k <= i + 1; ++k)
+				{
+					for (int l = j - 1; l <= j + 1; ++l)
+					{
+						if ((k>=0&&l>=0) && (k < MazeScheme.Num() && l < MazeScheme.Num()) && (k != i || l != j))
+						{
+							if (MazeScheme[k][l] >0 && MazeScheme[k][l]<3) // TO DO;
+							{
+								bFill = true;
+							}
+						}
+					}
+				}
+				if (bFill)
+				{
+						MazeScheme[i][j] = WallCharacter;
+				}
+			}
+		}
+	}
+}
+
 FRectangle AMazeRoomGenerator::GetRandomRectangle(FIntPoint CurrentMazeSize) const
 {
 	int32 Width = RStream.RandRange(MinimalRoomScale.X, MaximumRoomScale.X);
 	int32 Height = RStream.RandRange(MinimalRoomScale.Y, MaximumRoomScale.Y);
-	int32 X = RStream.RandRange(0, CurrentMazeSize.X - Width);
-	int32 Y = RStream.RandRange(0, CurrentMazeSize.Y - Height);
+	int32 X = RStream.RandRange(1, CurrentMazeSize.X - Width-1);
+	int32 Y = RStream.RandRange(1, CurrentMazeSize.Y - Height-1);
 	return FRectangle(X, Y, Width, Height);
 }
 
@@ -212,6 +282,7 @@ TArray<TArray<TPair<int32, uint64>>> AMazeRoomGenerator::MakeWeighedGraph(TArray
 		}
 	}
 	int i = 0;
+	//
 	/*for (auto P : Result) {
 		UE_LOG(Maze, Warning, TEXT("From Rib: %d"), i);
 		for (auto T : P) {
