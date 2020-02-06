@@ -34,6 +34,7 @@ public class Maze : ModuleRules
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
+				"Core",
 				"CoreUObject",
 				"Engine",
 				"Slate",
@@ -41,6 +42,9 @@ public class Maze : ModuleRules
 				"InputCore",
 				"UnrealEd",
 				"LevelEditor",
+				"NavigationSystem",
+				"AIModule",
+				"GameplayTasks",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
