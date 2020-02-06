@@ -13,7 +13,15 @@ void AMazeScalingBuilder::BeginPlay()
 	MGI->BuildSurroundingWalls();
 	BuildMazeFromScheme(MGI->GetMazeScheme());
 	MGI->LogMazeScheme();
-
+	auto Arr = MGI->GetWalkableTerrain();
+	FString p;
+	for (auto T : Arr)
+	{
+		for (auto Q : T)
+			p.AppendInt(Q);
+		p.AppendChar('\n');
+	}
+	UE_LOG(Maze, Warning, TEXT("Passable terrain \n%s"), *p);
 }
 
 void AMazeScalingBuilder::BuildMaze()

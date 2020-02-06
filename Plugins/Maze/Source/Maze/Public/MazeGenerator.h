@@ -20,6 +20,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void BuildMaze() {};
 	virtual void LogMazeScheme() const;
+	TArray<TArray<bool>> GetWalkableTerrain() const;
 	virtual TArray <TArray<int8>> GetMazeScheme() const;
 	void SetSeed(int32 Seed);
 	virtual void SetCharacterMap(const TMap<int8, FMazeProperties>&);

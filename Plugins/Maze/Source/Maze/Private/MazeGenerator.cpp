@@ -45,6 +45,32 @@ void AMazeGenerator::LogMazeScheme() const
 	UE_LOG(Maze, Warning, TEXT("\n%s"), *LoggingScheme);
 }
 
+TArray<TArray<bool>> AMazeGenerator::GetWalkableTerrain() const
+{
+	TArray<TArray<bool>> Result;
+	Result.SetNum(MazeScheme.Num());
+	int8 WallCharacter = 0;
+	if (CharacterMap.Contains(FName("Wall")))
+	{
+		WallCharacter = CharacterMap.FindChecked(FName("Wall"));
+	}
+	for (int i = 0; i < MazeScheme.Num(); ++i)
+	{
+		Result[i].SetNumZeroed(MazeScheme[i].Num());
+	}
+	for (int i = 0; i < MazeScheme.Num(); ++i)
+	{
+		for (int j = 0; j < MazeScheme.Num(); ++j)
+		{
+			if (MazeScheme[i][j] != 0 && MazeScheme[i][j] != WallCharacter)
+			{
+				Result[i][j] = true;
+			}
+		}
+	}
+	return Result;
+}
+
 TArray<TArray<int8>> AMazeGenerator::GetMazeScheme() const
 {
 	return this->MazeScheme;
