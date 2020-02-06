@@ -13,33 +13,32 @@ void AMazeScalingBuilder::BeginPlay()
 			BuildSingleRoom(Room);
 	}
 
+	TArray<AActor*> AttachedActors;
+	this->GetAttachedActors(AttachedActors);
+	UE_LOG(Maze, Warning, TEXT("AMazeScalingBuilder::BeginPlay() Num of attatched actors: %d"), AttachedActors.Num());
+
+	for (auto temp : RoomTemplates)
+	{
+		auto actor = World->SpawnActor<AMazeRoom>(temp, FVector(100, 100, 317.4), FRotator::ZeroRotator);
+		actor->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform, TEXT("Test Room"));
+		UE_LOG(Maze, Warning, TEXT("AMazeScalingBuilder::BeginPlay() actor name: %s"), *actor->GetName());
+	}
+
 	//TArray<AActor*> AttachedActors;
-	//this->GetAttachedActors(AttachedActors);
-	//UE_LOG(Maze, Warning, TEXT("AMazeScalingBuilder::BeginPlay() Num of attatched actors: %d"), AttachedActors.Num());
+	this->GetAttachedActors(AttachedActors);
+	UE_LOG(Maze, Warning, TEXT("AMazeScalingBuilder::BeginPlay() Num of attatched actors: %d"), AttachedActors.Num());
+	for (auto Actor : AttachedActors)
+	{
+		TArray<UInstancedStaticMeshComponent*> comps;
+		Actor->GetComponents<UInstancedStaticMeshComponent>(comps);
 
-	//for (auto temp : roomTemplates)
-	//{
-	//	auto actor = world->SpawnActor<AMazeRoom>(temp, FVector(100, 100, 317.4), FRotator::ZeroRotator);
-	//	actor->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform, TEXT("Test Room"));
-	//	UE_LOG(Maze, Warning, TEXT("AMazeScalingBuilder::BeginPlay() actor name: %s"), *actor->GetName());
-	//}
-
-	////TArray<AActor*> AttachedActors;
-	//this->GetAttachedActors(AttachedActors);
-	//UE_LOG(Maze, Warning, TEXT("AMazeScalingBuilder::BeginPlay() Num of attatched actors: %d"), AttachedActors.Num());
-	//for (auto Actor : AttachedActors)
-	//{
-	//	AMazeActor* MazeActor = (AMazeActor*)Actor;
-	//	TArray<UInstancedStaticMeshComponent*> comps;
-	//	MazeActor->GetComponents<UInstancedStaticMeshComponent>(comps);
-
-	//	UE_LOG(Maze, Warning, TEXT("AMazeScalingBuilder::BeginPlay() Num of comps: %d"), comps.Num());
-	//	for(int i = 0; i < comps.Num(); ++i)
-	//	{
-	//		UE_LOG(Maze, Warning, TEXT("AMazeScalingBuilder::BeginPlay() %s"), *comps[i]->GetName());
-	//		
-	//	}
-	//}
+		UE_LOG(Maze, Warning, TEXT("AMazeScalingBuilder::BeginPlay() Num of comps: %d"), comps.Num());
+		for(int i = 0; i < comps.Num(); ++i)
+		{
+			UE_LOG(Maze, Warning, TEXT("AMazeScalingBuilder::BeginPlay() %s"), *comps[i]->GetName());
+			
+		}
+	}
 
 }
 

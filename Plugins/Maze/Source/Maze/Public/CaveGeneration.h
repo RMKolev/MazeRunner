@@ -16,6 +16,7 @@ private:
 	int32 FillPercentige;
 	int32 NumberOfIterations;
 
+	//UPROPERTY()
 	TArray<TArray<char>> Cave;
 	TArray<TArray<char>> PrevCaveIteration;
 
