@@ -13,7 +13,15 @@ void AMazeScalingBuilder::BeginPlay()
 	MGI->BuildSurroundingWalls();
 	BuildMazeFromScheme(MGI->GetMazeScheme());
 	MGI->LogMazeScheme();
-
+	auto Arr = MGI->GetWalkableTerrain();
+	FString p;
+	for (auto T : Arr)
+	{
+		for (auto Q : T)
+			p.AppendInt(Q);
+		p.AppendChar('\n');
+	}
+	UE_LOG(Maze, Warning, TEXT("Passable terrain \n%s"), *p);
 }
 
 void AMazeScalingBuilder::BuildMaze()
@@ -31,11 +39,13 @@ void AMazeScalingBuilder::BuildMazeFromScheme(const TArray<TArray<int8>>& MazeSc
 			if (CharacterMap.Find(MazeScheme[i][j]) != nullptr)
 			{
 				UE_LOG(Maze, Warning, TEXT("Building actor on coordinates %d,%d"), i, j);
-				auto InstanceName = CharacterMap.FindChecked(MazeScheme[i][j]);
+				auto ComponentInformation = CharacterMap.FindChecked(MazeScheme[i][j]);
+				auto InstanceName = ComponentInformation.InstanceMeshName;
 				if (InstanceMeshes.Find(InstanceName) != nullptr)
 				{
 					auto Instance = InstanceMeshes.FindChecked(InstanceName);
-					FTransform Trans( FRotator::ZeroRotator,Basis.GetMazeActorLocation(FIntPoint(i, j), FIntVector(2, 2, MazeScheme[i][j] == 3 ? 2 : 1)), FVector(2,2, MazeScheme[i][j]==3?2:1));
+					FVector InstanceScale = FVector(ComponentInformation.Scale.X*Basis.Scale.X, ComponentInformation.Scale.Y * Basis.Scale.Y, ComponentInformation.Scale.Z * Basis.Scale.Z);
+					FTransform Trans( FRotator::ZeroRotator,Basis.GetMazeActorLocation(FIntPoint(i, j),ComponentInformation.Scale),InstanceScale);
 					Instance->AddInstanceWorldSpace(Trans);
 				}
 			}

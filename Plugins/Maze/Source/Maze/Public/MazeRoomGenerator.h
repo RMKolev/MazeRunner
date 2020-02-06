@@ -41,13 +41,11 @@ public:
 	void FillPath(FIntPoint, FIntPoint);
 	void FillRoom(const FRectangle&);
 	virtual void LogMazeScheme() const override;
-	void SetCharacterMap(const TMap<int8, FMazeProperties>&);
+	virtual void SetCharacterMap(const TMap<int8, FMazeProperties>&) override;
 
 	virtual TArray<TArray<int8>> GetMazeScheme() const override;
 	TArray<FRectangle> GenerateMazeRooms();
 	void BuildSurroundingWalls();
-	//TArray<TArray<char>> GetPaths() const;
-	//TArray<TArray<char>> GetRooms() const;
 	FRectangle GetRandomRectangle(FIntPoint) const;
 	TArray <TArray<TPair<int32, uint64>>> MakeWeighedGraph(TArray<FRectangle>&, int32 = 42);
 	TArray<TPair<TPair<int32, int32>, uint64>> GetApproximateMinimalSpanTreeGraph(TArray<FRectangle>& rectangles, int32 neighborLimit = 42);
