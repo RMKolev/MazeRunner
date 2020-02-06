@@ -16,7 +16,7 @@ class MAZE_API AMazeScalingBuilder : public AMazeBuilder
 	GENERATED_BODY()
 protected:
 	UPROPERTY(Category = MazeAlgorithm,EditAnywhere)
-		TSubclassOf<AMazeRoomGenerator> MG;
+		TSubclassOf<AMazeGenerator> MG;
 
 	virtual void BeginPlay() override;
 public:

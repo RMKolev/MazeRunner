@@ -8,13 +8,13 @@
 void AMazeScalingBuilder::BeginPlay()
 {
 	Super::BeginPlay();
-	auto MGI = (AMazeRoomGenerator*)MG->GetDefaultObject();
+	auto MGI = (AMazeGenerator*)MG->GetDefaultObject();
 	MGI->BuildMaze();
-	MGI->BuildSurroundingWalls();
+	//MGI->BuildSurroundingWalls();
 	BuildMazeFromScheme(MGI->GetMazeScheme());
-	MGI->LogMazeScheme();
+	//MGI->LogMazeScheme();
 
-	TArray<AActor*> AttachedActors;
+	/*TArray<AActor*> AttachedActors;
 	this->GetAttachedActors(AttachedActors);
 	UE_LOG(Maze, Warning, TEXT("AMazeScalingBuilder::BeginPlay() Num of attatched actors: %d"), AttachedActors.Num());
 
@@ -39,7 +39,7 @@ void AMazeScalingBuilder::BeginPlay()
 			UE_LOG(Maze, Warning, TEXT("AMazeScalingBuilder::BeginPlay() %s"), *comps[i]->GetName());
 			
 		}
-	}
+	}*/
 
 }
 
@@ -59,10 +59,10 @@ void AMazeScalingBuilder::BuildMazeFromScheme(const TArray<TArray<int8>>& MazeSc
 			{
 				UE_LOG(Maze, Warning, TEXT("Building actor on coordinates %d,%d"), i, j);
 				auto InstanceName = CharacterMap.FindChecked(MazeScheme[i][j]);
-				if (InstanceMeshes.Find(InstanceName) != nullptr)
+				if (InstanceMeshes.Find(InstanceName.InstanceMeshName) != nullptr)
 				{
-					auto Instance = InstanceMeshes.FindChecked(InstanceName);
-					FTransform Trans( FRotator::ZeroRotator,Basis.GetMazeActorLocation(FIntPoint(i, j), FIntVector(2, 2, MazeScheme[i][j] == 3 ? 2 : 1)), FVector(2,2, MazeScheme[i][j]==3?2:1));
+					auto Instance = InstanceMeshes.FindChecked(InstanceName.InstanceMeshName);
+					FTransform Trans( FRotator::ZeroRotator,Basis.GetMazeActorLocation(FIntPoint(i, j), FIntVector(1, 1, MazeScheme[i][j] == 3 ? 2 : 1)), FVector(1,1, MazeScheme[i][j]==3?2:1));
 					Instance->AddInstanceWorldSpace(Trans);
 				}
 			}
