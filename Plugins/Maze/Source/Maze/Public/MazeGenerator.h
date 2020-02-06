@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Maze.h"
+#include "MazeBuilder.h"
 #include "MazeGenerator.generated.h"
 
 UCLASS()
@@ -21,6 +22,7 @@ public:
 	virtual void LogMazeScheme() const;
 	virtual TArray <TArray<int8>> GetMazeScheme() const;
 	void SetSeed(int32 Seed);
+	virtual void SetCharacterMap(const TMap<int8, FMazeProperties>&);
 protected:
 	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
 		uint64 WorldSeed;

@@ -41,7 +41,7 @@ public:
 	void FillPath(FIntPoint, FIntPoint);
 	void FillRoom(const FRectangle&);
 	virtual void LogMazeScheme() const override;
-	void SetCharacterMap(const TMap<int8, FMazeProperties>&);
+	virtual void SetCharacterMap(const TMap<int8, FMazeProperties>&) override;
 
 	virtual TArray<TArray<int8>> GetMazeScheme() const override;
 	TArray<FRectangle> GenerateMazeRooms();

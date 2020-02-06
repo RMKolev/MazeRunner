@@ -56,3 +56,19 @@ void AMazeGenerator::SetSeed(int32 Seed)
 	this->RStream.Initialize(Seed);
 }
 
+void AMazeGenerator::SetCharacterMap(const TMap<int8, FMazeProperties>& Map )
+{
+	for (auto MapItem : Map)
+	{
+		if (this->CharacterMap.Contains(MapItem.Value.ComponentName))
+		{
+			UE_LOG(Maze, Error, TEXT("MazeRoomGenerator:SetCharacterMap - There is already a component with the same name in the map! (%s)")
+				   , *MapItem.Value.ComponentName.ToString());
+		}
+		else
+		{
+			this->CharacterMap.Add(MapItem.Value.ComponentName, MapItem.Value.Id);
+		}
+	}
+}
+

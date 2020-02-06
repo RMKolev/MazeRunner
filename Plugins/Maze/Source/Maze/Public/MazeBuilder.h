@@ -11,9 +11,13 @@ USTRUCT()
 struct FMazeProperties
 {
 	GENERATED_BODY();
+	UPROPERTY(EditAnywhere)
 	FName ComponentName;
+	UPROPERTY(EditAnywhere)
 	FName InstanceMeshName;
+	UPROPERTY(EditAnywhere)
 	FIntVector Scale;
+	UPROPERTY(EditAnywhere)
 	int8 Id;
 };
 
@@ -21,12 +25,12 @@ USTRUCT()
 struct FMazeBasis
 {
 	GENERATED_BODY()
-
+		//The position of 0,0 
 		UPROPERTY(EditAnywhere)
-		FVector Start; //The position of 0,0 
+		FVector Start;
+		//Assumes 1 = 100cm in Unreal Units
 	UPROPERTY(EditAnywhere)
-		FVector Scale; // Assumes 1 = 100cm in Unreal Units
-
+		FVector Scale;
 	FMazeBasis(FVector Start, FVector Scale) : Start(Start)
 	{
 		if (Scale.X > 0 && Scale.Y > 0 && Scale.Z > 0) this->Scale = Scale;
@@ -34,11 +38,11 @@ struct FMazeBasis
 	FMazeBasis() :FMazeBasis(FVector(0, 0, 0), FVector(100, 100, 100)) {};
 	FVector GetMazePointLocation(FIntPoint Mp) const
 	{
-		return Start + FVector(Mp.X + 0.5, Mp.Y + 0.5, 0) * (Scale*100);
+		return Start + (FVector(Mp.X + 0.5, Mp.Y + 0.5, 0) *Scale*100);
 	}
 	FVector GetMazeActorLocation(FIntPoint Mp, const FIntVector ActorScale) const
 	{
-		return GetMazePointLocation(Mp) + FVector(ActorScale.X - 1, ActorScale.Y - 1, ActorScale.Z - 1) * (Scale / 2);
+		return GetMazePointLocation(Mp) + FVector(ActorScale.X, ActorScale.Y, ActorScale.Z) * (Scale*50);
 	}
 };
 
@@ -53,7 +57,7 @@ protected:
 	//A map for names when using a Character Matrix. 
 	//Associates every value with a Name of an InstanceMesh which then adds the component
 	UPROPERTY(EditAnywhere)
-		TMap<int8, FName> CharacterMap;
+		TMap<int8, FMazeProperties> CharacterMap;
 	//All the Instance Meshes to be initialised. Each actor here will receive an instance stored in InstanceMeshes
 	UPROPERTY(EditAnywhere)
 		TMap<FName, TSubclassOf<UInstancedStaticMeshComponent>> Assets;
