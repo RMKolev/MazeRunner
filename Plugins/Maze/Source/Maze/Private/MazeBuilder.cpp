@@ -8,7 +8,7 @@
 // Sets default values
 AMazeBuilder::AMazeBuilder()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 }
@@ -18,11 +18,13 @@ void AMazeBuilder::BeginPlay()
 {
 	Super::BeginPlay();
 	this->World = GetWorld();
-	if (!IsValid(World)) {
+	if (!IsValid(World))
+	{
 		UE_LOG(Maze, Error, TEXT("AMazeBuilder::BeginPlay() World == nullptr"));
 	}
 
-	for (auto Instance : Assets) {
+	for (auto Instance : Assets)
+	{
 		auto Val = NewObject<UInstancedStaticMeshComponent>(this, Instance.Value);
 		Val->RegisterComponent();
 		InstanceMeshes.Add(Instance.Key, Val);
