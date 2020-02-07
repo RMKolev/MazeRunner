@@ -91,7 +91,7 @@ void AMazeScalingBuilder::BuildMazeFromScheme( TArray<TArray<int8>> MazeScheme)
 						auto Instance = InstanceMeshes.FindChecked(InstanceName);
 						FIntVector InstanceScaleInt = FIntVector(ComponentInformation.Scale.X * (NumberDown), ComponentInformation.Scale.Y * (NumberRight), ComponentInformation.Scale.Z);
 						FVector InstanceScale = FVector(ComponentInformation.Scale.X * Basis.Scale.X* (NumberDown), ComponentInformation.Scale.Y * Basis.Scale.Y * (NumberRight), ComponentInformation.Scale.Z * Basis.Scale.Z);
-						FTransform Trans(FRotator::ZeroRotator, Basis.GetMazeActorLocation(FIntPoint(i, j), InstanceScaleInt), InstanceScale);
+						FTransform Trans(FRotator::ZeroRotator, Basis.GetMazeComponentLocation(FIntPoint(i, j), InstanceScaleInt), InstanceScale);
 						Instance->AddInstanceWorldSpace(Trans);
 					}
 				}
