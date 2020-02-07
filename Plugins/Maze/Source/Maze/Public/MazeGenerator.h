@@ -5,9 +5,21 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Maze.h"
-#include "MazeBuilder.h"
 #include "MazeGenerator.generated.h"
 
+USTRUCT()
+struct FMazeProperties
+{
+	GENERATED_BODY();
+	UPROPERTY(EditAnywhere)
+		FName ComponentName;
+	UPROPERTY(EditAnywhere)
+		FName InstanceMeshName;
+	UPROPERTY(EditAnywhere)
+		FIntVector Scale;
+	UPROPERTY(EditAnywhere)
+		int8 Id;
+};
 UCLASS()
 class MAZE_API AMazeGenerator : public AActor
 {

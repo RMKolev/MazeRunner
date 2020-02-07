@@ -4,8 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MazeBuilder.h"
-#include "MazeRoom.h"
-#include "MazeRoomGenerator.h"
+#include "MazeGenerator.h"
 #include "MazeScalingBuilder.generated.h"
 /**
  *
@@ -15,9 +14,6 @@ class MAZE_API AMazeScalingBuilder : public AMazeBuilder
 {
 	GENERATED_BODY()
 protected:
-	UPROPERTY(Category = MazeAlgorithm,EditAnywhere)
-		TSubclassOf<AMazeRoomGenerator> MG;
-
 	virtual void BeginPlay() override;
 public:
 	virtual void BuildMaze() override;

@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Rectangle.h"
 #include "GameFramework/Actor.h"
-#include "MazeBuilder.h"
+#include "Maze.h"
 #include "MazeGenerator.h"
 #include "MazeRoomGenerator.generated.h"
 
@@ -35,13 +35,12 @@ protected:
 
 
 public:
-	void BuildMaze();
+	virtual void BuildMaze() override;
 	void MakeXTunnel(int32, int32, int32);
 	void MakeYTunnel(int32, int32, int32);
 	void FillPath(FIntPoint, FIntPoint);
 	void FillRoom(const FRectangle&);
 	virtual void LogMazeScheme() const override;
-	virtual void SetCharacterMap(const TMap<int8, FMazeProperties>&) override;
 
 	virtual TArray<TArray<int8>> GetMazeScheme() const override;
 	TArray<FRectangle> GenerateMazeRooms();
