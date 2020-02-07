@@ -82,6 +82,18 @@ FReply FMazeEdModeToolkit::OnClickedCreateWrapper()
 //Function called when the Generate Maze button is clicked
 FReply FMazeEdModeToolkit::OnClickedGenerateMaze()
 {
+	UWorld* EditorWorld = GEditor->GetEditorWorldContext().World();
+
+	//Setting a default value
+	MazeWrapper = nullptr;
+
+	//Search for already spawned Maze Wrapper
+	auto It = TActorIterator<AMazeBuilderWrapper>(EditorWorld);
+	for (; It; ++It)
+	{
+		MazeWrapper = *It;
+	}
+
 	//If there is no wrapper instantiated
 	if (MazeWrapper == nullptr)
 	{

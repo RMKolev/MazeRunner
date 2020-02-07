@@ -4,9 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "BlockBuilder.h"
 #include "Engine/World.h"
 #include "MazeBuilderWrapper.generated.h"
+
+class AMazeBuilder;
 
 UCLASS()
 class MAZE_API AMazeBuilderWrapper : public AActor
@@ -29,4 +30,13 @@ public:
 
 	UPROPERTY(Category = MazeProperties, EditAnywhere)
 	TSubclassOf<class AMazeBuilder> MazeBuilderClass;
+
+	UPROPERTY(Category = MazeProperties, VisibleAnywhere)
+		FVector CharacterLocation;
+
+	UPROPERTY(Category = MazeProperties, VisibleAnywhere)
+		FString CharacterName;
+
+	UPROPERTY(Category = MazeProperties, VisibleAnywhere)
+		bool bSpawnCharacter;
 };

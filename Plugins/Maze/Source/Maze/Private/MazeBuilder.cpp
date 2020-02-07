@@ -3,11 +3,9 @@
 
 #include "MazeBuilder.h"
 #include "Engine/World.h"
-
 #include "EngineUtils.h"
 #include "GameFramework/Character.h"
 #include "Maze.h"
-#include "Components/CapsuleComponent.h"
 #include <EditorModeManager.h>
 
 // Sets default values
@@ -65,22 +63,23 @@ void AMazeBuilder::BeginPlay()
 		RegisterInstanceMeshComponents();
 		BuildMaze();
 		PlaceActors();
-	}
-	if (GetWorld() != nullptr)
-	{
-		UWorld* World = GetWorld();
-		auto It = TActorIterator<ACharacter>(World);
-		for (;It;++It)
+		if (GetWorld() != nullptr)
 		{
-			auto PS = *It;
-			if (PS->GetName() == CharacterName.ToString())
+			UWorld* World = GetWorld();
+			auto It = TActorIterator<ACharacter>(World);
+			for (; It; ++It)
 			{
-				PS->SetActorLocation(Basis.GetMazeActorLocation(CharacterStartPoint,FIntVector(1,1,1)));
+				auto PS = *It;
+				if (PS->GetName() == CharacterName.ToString())
+				{
+					PS->SetActorLocation(Basis.GetMazeActorLocation(CharacterStartPoint, FIntVector(1, 1, 1)) + FVector(0, 0, 50));
+				}
+				UE_LOG(Maze, Warning, TEXT("Here! %s"), *PS->GetName());
 			}
-			UE_LOG(Maze, Warning, TEXT("Here! %s"), *PS->GetName());
+			UE_LOG(Maze, Warning, TEXT("Character starting location %s"), *this->CharacterStartPoint.ToString())
 		}
-		UE_LOG(Maze,Warning, TEXT("Character starting location %s"), *this->CharacterStartPoint.ToString())
 	}
+	
 }
 
 void AMazeBuilder::GenerateMaze()
@@ -89,12 +88,14 @@ void AMazeBuilder::GenerateMaze()
 		UE_LOG(Maze, Error, TEXT("AMazeBuilder: Invalid Maze Generation class/blueprint"));
 	}
 	auto MGInstance = (AMazeGenerator*)MazeGenerator->GetDefaultObject();
+	MGInstance->SetCharacterMap(this->CharacterMap);
 	MGInstance->BuildMaze();
 	UE_LOG(Maze, Log, TEXT("AMazeBuilder: Maze successfully generated"));
 	this->MazeScheme = MGInstance->GetMazeScheme();
 	this->WorldSeed = MGInstance->GetSeed();
 	this->WalkableTerrain = MGInstance->GetWalkableTerrain();
-	this->CharacterStartPoint = MGInstance->GetRandomCharacterStartingPoint();
+	FRandomStream RS = FRandomStream(WorldSeed);
+	this->CharacterStartPoint = GetRandomWalkablePoint(RS);
 }
 
 void AMazeBuilder::PlaceActors()
@@ -119,7 +120,7 @@ void AMazeBuilder::PlaceActors()
 	auto World = GetWorld();
 	if (IsValid(World))
 	{
-		UE_LOG(Maze, Error, TEXT("MazeBuilder : PlaceActors -> World is invalid!"));
+		UE_LOG(Maze, Error, TEXT("MazeBuilder : PlaceActors -> World is valid!"));
 	}
 	for (FMazeActor Actor : ActorsToPlace)
 	{
@@ -133,6 +134,9 @@ void AMazeBuilder::PlaceActors()
 				auto AssetClass = Actor.Asset;
 				auto Instance = World->SpawnActor<AActor>(AssetClass,Basis.GetMazeActorLocation(Point, FIntVector(1, 1, 1)),FRotator::ZeroRotator);
 				Instance->SetActorScale3D(Actor.Scale);
+				Point = GetRandomWalkablePoint(RS);
+			}
+			else {
 				Point = GetRandomWalkablePoint(RS);
 			}
 		}

@@ -27,7 +27,6 @@ public:
 	virtual TSharedPtr<class SWidget> GetInlineContent() const override { return ToolkitWidget; }
 
 private:
-
 	TSharedPtr<SWidget> ToolkitWidget;
 	AMazeBuilderWrapper* MazeWrapper;
 };

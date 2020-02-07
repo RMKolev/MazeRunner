@@ -4,6 +4,8 @@
 #include "MazeBuilderWrapper.h"
 #include "MazeBuilder.h"
 #include "Misc/MessageDialog.h"
+#include "EngineUtils.h"
+#include "GameFramework/Character.h"
 #include "Maze.h"
 
 // Sets default values
@@ -49,6 +51,9 @@ void AMazeBuilderWrapper::InstantiateMazeBuilder()
 			MBInstance->RegisterInstanceMeshComponents();
 			MBInstance->RegisterAllComponents();
 			MBInstance->BuildMaze();
+			bSpawnCharacter = true;
+			CharacterName = MBInstance->GetCharacterName();
+			CharacterLocation = MBInstance->GetCharacterStartingLocation();
 		}
 
 		//Message that the maze is generated
@@ -66,7 +71,28 @@ void AMazeBuilderWrapper::InstantiateMazeBuilder()
 void AMazeBuilderWrapper::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (bSpawnCharacter)
+	{
+		UE_LOG(Maze, Error, TEXT(" HEREEEEEE!"));
+		if (GetWorld() != nullptr)
+		{
+			UE_LOG(Maze, Error, TEXT(" HEREEEEEE!"));
+			UWorld* World = GetWorld();
+			auto It = TActorIterator<ACharacter>(World);
+			for (; It; ++It)
+			{
+				auto PS = *It;
+				if (PS->GetName() == CharacterName)
+				{
+					UE_LOG(Maze, Error, TEXT(" HEREEEEEE!"));
+					PS->SetActorLocation(CharacterLocation);
+				}
+				UE_LOG(Maze, Warning, TEXT("Here! %s"), *PS->GetName());
+			}
+			UE_LOG(Maze, Warning, TEXT("Character starting location %s"), *CharacterLocation.ToString());
+		}
+	}
 }
 
 // Called every frame

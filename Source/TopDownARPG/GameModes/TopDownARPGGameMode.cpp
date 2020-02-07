@@ -4,6 +4,10 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Controllers/TopDownARPGPlayerController.h"
 #include "Characters/TopDownARPGCharacter.h"
+#include "GameFramework/GameMode.h"
+#include "MazeBuilderWrapper.h"
+#include "MazeBuilder.h"
+#include "EngineUtils.h"
 #include "TopDownARPG.h"
 
 ATopDownARPGGameMode::ATopDownARPGGameMode()

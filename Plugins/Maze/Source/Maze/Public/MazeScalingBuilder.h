@@ -14,6 +14,7 @@ class MAZE_API AMazeScalingBuilder : public AMazeBuilder
 {
 	GENERATED_BODY()
 protected:
+
 	virtual void BeginPlay() override;
 public:
 	virtual void BuildMaze() override;

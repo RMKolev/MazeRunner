@@ -52,7 +52,7 @@ TArray<TArray<bool>> AMazeGenerator::GetWalkableTerrain() const
 	}
 	for (int i = 0; i < MazeScheme.Num(); ++i)
 	{
-		for (int j = 0; j < MazeScheme.Num(); ++j)
+		for (int j = 0; j < MazeScheme[i].Num(); ++j)
 		{
 			if (MazeScheme[i][j] != 0 && MazeScheme[i][j] != WallCharacter)
 			{
@@ -76,6 +76,7 @@ void AMazeGenerator::SetSeed(int32 Seed)
 
 void AMazeGenerator::SetCharacterMap(const TMap<int8, FMazeProperties>& Map )
 {
+	this->CharacterMap.Empty();
 	for (auto MapItem : Map)
 	{
 		if (this->CharacterMap.Contains(MapItem.Value.ComponentName))

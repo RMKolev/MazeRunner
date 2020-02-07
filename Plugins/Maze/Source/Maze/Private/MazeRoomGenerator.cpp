@@ -260,7 +260,7 @@ void AMazeRoomGenerator::BuildSurroundingWalls()
 					{
 						if ((k>=0&&l>=0) && (k < MazeScheme.Num() && l < MazeScheme.Num()) && (k != i || l != j))
 						{
-							if (MazeScheme[k][l] >0 && MazeScheme[k][l]<3) // TO DO;
+							if (MazeScheme[k][l] == CharacterMap.FindChecked(FName("Path")) || MazeScheme[k][l] == CharacterMap.FindChecked(FName("Floor")))
 							{
 								bFill = true;
 							}

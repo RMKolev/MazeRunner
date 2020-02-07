@@ -51,7 +51,7 @@ struct FMazeBasis
 	}
 	FVector GetMazeActorLocation(FIntPoint Mp, const FIntVector ComponentScale) const
 	{
-		return GetMazeComponentLocation(Mp,ComponentScale) + FVector(0,0,0.5)*Scale*100;
+		return GetMazeComponentLocation(Mp,ComponentScale) + FVector(0,0,1)*Scale*50;
 	}
 	
 };
@@ -105,6 +105,8 @@ public:
 	void SetCharacterMap() {};
 	bool GetBuildOnPlay() { return bBuildOnPlay; }
 	bool GetGenerateOnPlay() { return bGenerateOnPlay; }
+	FString GetCharacterName() { return CharacterName.ToString(); }
+	FVector GetCharacterStartingLocation() { return Basis.GetMazeActorLocation(CharacterStartPoint, FIntVector(1, 1, 1)); }
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

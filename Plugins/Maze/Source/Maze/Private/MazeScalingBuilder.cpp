@@ -4,6 +4,8 @@
 #include "MazeScalingBuilder.h"
 #include "Engine/World.h"
 #include "Maze.h"
+#include "GameFramework/PlayerStart.h"
+#include "EngineUtils.h"
 
 void AMazeScalingBuilder::BeginPlay()
 {
@@ -27,9 +29,10 @@ void AMazeScalingBuilder::BuildMazeFromScheme( TArray<TArray<int8>> MazeScheme)
 		{
 			if (MazeScheme[i][j] != 0)
 			{
+
 				if (CharacterMap.Find(MazeScheme[i][j]) != nullptr)
 				{
-					UE_LOG(Maze, Warning, TEXT("Building actor on coordinates %d,%d"), i, j);
+					//UE_LOG(Maze, Warning, TEXT("Building actor on coordinates %d,%d"), i, j);
 					auto ComponentInformation = CharacterMap.FindChecked(MazeScheme[i][j]);
 					auto InstanceName = ComponentInformation.InstanceMeshName;
 					if (InstanceMeshes.Find(InstanceName) != nullptr)
@@ -87,7 +90,9 @@ void AMazeScalingBuilder::BuildMazeFromScheme( TArray<TArray<int8>> MazeScheme)
 								MazeScheme[k][l] = 0;
 							}
 						}
+
 						UE_LOG(Maze, Log, TEXT("Building Maze Component with size:%d,%d on Coordinates %d,%d"), NumberRight, NumberDown, i, j);
+
 						auto Instance = InstanceMeshes.FindChecked(InstanceName);
 						FIntVector InstanceScaleInt = FIntVector(ComponentInformation.Scale.X * (NumberDown), ComponentInformation.Scale.Y * (NumberRight), ComponentInformation.Scale.Z);
 						FVector InstanceScale = FVector(ComponentInformation.Scale.X * Basis.Scale.X* (NumberDown), ComponentInformation.Scale.Y * Basis.Scale.Y * (NumberRight), ComponentInformation.Scale.Z * Basis.Scale.Z);
@@ -98,6 +103,7 @@ void AMazeScalingBuilder::BuildMazeFromScheme( TArray<TArray<int8>> MazeScheme)
 				else
 				{
 					UE_LOG(Maze, Error, TEXT("No valid component exists for this code: %d"), MazeScheme[i][j]);
+
 				}
 			}
 		}
