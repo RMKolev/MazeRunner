@@ -3,7 +3,12 @@
 
 #include "MazeBuilder.h"
 #include "Engine/World.h"
+
+#include "EngineUtils.h"
+#include "GameFramework/Character.h"
 #include "Maze.h"
+#include "Components/CapsuleComponent.h"
+#include <EditorModeManager.h>
 
 // Sets default values
 AMazeBuilder::AMazeBuilder()
@@ -17,6 +22,7 @@ AMazeBuilder::AMazeBuilder()
 void AMazeBuilder::BeginPlay()
 {
 	Super::BeginPlay();
+
 	if (bGenerateOnPlay)
 	{
 		this->GenerateMaze();
@@ -25,6 +31,21 @@ void AMazeBuilder::BeginPlay()
 	{
 		this->RegisterInstanceMeshComponents();
 		this->BuildMaze();
+	}
+	if (GetWorld() != nullptr)
+	{
+		UWorld* World = GetWorld();
+		auto It = TActorIterator<ACharacter>(World);
+		for (;It;++It)
+		{
+			auto PS = *It;
+			if (PS->GetName() == CharacterName.ToString())
+			{
+				PS->SetActorLocation(CharacterStartPoint);
+			}
+			UE_LOG(Maze, Warning, TEXT("Here! %s"), *PS->GetName());
+		}
+		UE_LOG(Maze,Warning, TEXT("Character starting location %s"), *this->CharacterStartPoint.ToString())
 	}
 }
 
@@ -37,6 +58,7 @@ void AMazeBuilder::GenerateMaze()
 	MGInstance->BuildMaze();
 	UE_LOG(Maze, Log, TEXT("AMazeBuilder: Maze successfully generated"));
 	this->MazeScheme = MGInstance->GetMazeScheme();
+	this->CharacterStartPoint = Basis.GetMazeActorLocation(MGInstance->GetRandomCharacterStartingPoint(),FIntVector(1,1,1));
 }
 
 void AMazeBuilder::RegisterInstanceMeshComponents()

@@ -43,7 +43,6 @@ protected:
 		bool bUseCustomSeed;
 	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
 		TMap<FName, int8> CharacterMap;
-
 	FRandomStream RStream;
 	TArray<TArray<int8>> MazeScheme;
 

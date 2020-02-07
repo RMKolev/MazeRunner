@@ -27,10 +27,15 @@ struct FMazeBasis
 	{
 		return Start + (FVector(Mp.X + 0.5, Mp.Y + 0.5, 0) *Scale*100);
 	}
-	FVector GetMazeActorLocation(FIntPoint Mp, const FIntVector ActorScale) const
+	FVector GetMazeComponentLocation(FIntPoint Mp, const FIntVector ComponentScale) const
 	{
-		return GetMazePointLocation(Mp) + FVector(ActorScale.X, ActorScale.Y, ActorScale.Z) * (Scale*50);
+		return GetMazePointLocation(Mp) + FVector(ComponentScale.X, ComponentScale.Y, ComponentScale.Z) * (Scale*50);
 	}
+	FVector GetMazeActorLocation(FIntPoint Mp, const FIntVector ComponentScale) const
+	{
+		return GetMazeComponentLocation(Mp,ComponentScale) + FVector(0,0,0.5)*Scale*100;
+	}
+	
 };
 
 UCLASS()
@@ -60,15 +65,21 @@ protected:
 	// Boolean value telling the builder whether to render the maze at runtime.
 	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
 		bool bGenerateOnPlay;
+	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
+		FName CharacterName;
+	FVector CharacterStartPoint;
 	// A matrix to store the Maze Schematic upon generation
 	TArray<TArray<int8>> MazeScheme;
 	virtual void BeginPlay() override;
+
 public:
 	// Function to build the maze. To be implemented in heirs of class.
 	virtual void BuildMaze() {};
 	virtual void GenerateMaze();
 	void RegisterInstanceMeshComponents();
 	void SetCharacterMap() {};
+	bool GetBuildOnPlay() { return bBuildOnPlay; }
+	bool GetGenerateOnPlay() { return bGenerateOnPlay; }
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
