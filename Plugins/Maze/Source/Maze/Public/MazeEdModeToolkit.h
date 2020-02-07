@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BlockBuilderWrapper.h"
-#include "BlockBuilder.h"
 #include "Toolkits/BaseToolkit.h"
+
+class AMazeBuilderWrapper;
 
 class FMazeEdModeToolkit : public FModeToolkit
 {
@@ -13,11 +13,9 @@ public:
 
 	FMazeEdModeToolkit();
 
-	FReply OnClickedRoombasedWrapper();
-	FReply OnClickedCavebasedWrapper();
+	FReply OnClickedCreateWrapper();
 
-	FReply OnClickedRoombasedMaze();
-	FReply OnClickedCavebasedMaze();
+	FReply OnClickedGenerateMaze();
 	
 	/** FModeToolkit interface */
 	virtual void Init(const TSharedPtr<IToolkitHost>& InitToolkitHost) override;
@@ -31,7 +29,6 @@ public:
 private:
 
 	TSharedPtr<SWidget> ToolkitWidget;
-
-	ABlockBuilderWrapper* CavebasedMazeWrapper;
+	AMazeBuilderWrapper* MazeWrapper;
 };
 

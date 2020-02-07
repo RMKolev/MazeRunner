@@ -19,46 +19,38 @@
 #include "MazeBuilderWrapper.h"
 #include "EditorModeManager.h"
 
-
-
 #define LOCTEXT_NAMESPACE "FMazeEdModeToolkit"
 
 FMazeEdModeToolkit::FMazeEdModeToolkit()
 {
 }
 
-FReply FMazeEdModeToolkit::OnClickedRoombasedWrapper()
-{
-	UE_LOG(Maze, Warning, TEXT("Roombased mode."));
-
-	FText TitleText = FText::FromString(TEXT("Maze Plugin"));
-	FString MsgString = TEXT("AActor named... was created.\nPlease configure it in the Details Panel and generate the chosen maze.");
-	FText MsgText = FText::FromString(MsgString);
-
-	FMessageDialog::Open(EAppMsgType::Ok, MsgText, &TitleText);
-
-	return FReply::Handled();
-}
-
-FReply FMazeEdModeToolkit::OnClickedCavebasedWrapper()
+//Function called when the Create Wrapper button is clicked
+FReply FMazeEdModeToolkit::OnClickedCreateWrapper()
 {
 	UE_LOG(Maze, Warning, TEXT("Cavebased mode."));
 
 	UWorld* EditorWorld = GEditor->GetEditorWorldContext().World();
 
-	FActorSpawnParameters SpawnInfo;
-	FVector Location = FVector(0.0f);
-	FRotator Rotation = FRotator(0, 0, 0);
+	//Setting a default value
+	MazeWrapper = nullptr;
 
+	//Search for already spawned Maze Wrapper
 	auto It = TActorIterator<AMazeBuilderWrapper>(EditorWorld);
-
 	for (; It; ++It)
 	{
 		MazeWrapper = *It;
 	}
 
+	FText MsgText;
+	FString MsgString;
+
+	//If no wrapper is already spawned, we should spawn it now
 	if (MazeWrapper == nullptr)
 	{
+		FVector Location = FVector(0.0f);
+		FRotator Rotation = FRotator(0, 0, 0);
+
 		MazeWrapper = (AMazeBuilderWrapper*)EditorWorld->SpawnActor(AMazeBuilderWrapper::StaticClass(), &Location, &Rotation);
 
 		FString WrapperName("Maze Wrapper");
@@ -66,30 +58,49 @@ FReply FMazeEdModeToolkit::OnClickedCavebasedWrapper()
 		MazeWrapper->Rename(*WrapperName);
 		MazeWrapper->SetActorLabel(*WrapperName);
 
-		FText TitleText = FText::FromString(TEXT("Maze Plugin"));
-		FString MsgString = TEXT("AMazeWrapper named Maze Wrapper was created.\nPlease configure it in the Details Panel and generate the chosen maze.");
-		FText MsgText = FText::FromString(MsgString);
-
-		FMessageDialog::Open(EAppMsgType::Ok, MsgText, &TitleText);
+		MsgString = TEXT("AMazeWrapper named Maze Wrapper was created.\nPlease configure it in the Details Panel and generate the chosen maze.");
+		MsgText = FText::FromString(MsgString);
 
 		UE_LOG(Maze, Warning, TEXT("New maze wrapper."));
 	}
+	//If a wrapper already exists
+	else
+	{
+		MsgString = TEXT("AMazeWrapper already exists and is named Maze Wrapper. \nPlease configure it in the Details Panel and generate the chosen maze.");
+		MsgText = FText::FromString(MsgString);
+
+		UE_LOG(Maze, Warning, TEXT("Maze wrapper already exists."));
+	}
+
+	FText TitleText = FText::FromString(TEXT("Maze Plugin"));
+
+	FMessageDialog::Open(EAppMsgType::Ok, MsgText, &TitleText);
 
 	return FReply::Handled();
 }
 
-FReply FMazeEdModeToolkit::OnClickedRoombasedMaze()
+//Function called when the Generate Maze button is clicked
+FReply FMazeEdModeToolkit::OnClickedGenerateMaze()
 {
-	return FReply::Handled();
-}
+	//If there is no wrapper instantiated
+	if (MazeWrapper == nullptr)
+	{
+		FText TitleText = FText::FromString(TEXT("Maze Plugin"));
 
-FReply FMazeEdModeToolkit::OnClickedCavebasedMaze()
-{
+		FString MsgString = TEXT("AMazeWrapper does not exists. \nPlease create an instance of it first.");
+		FText  MsgText = FText::FromString(MsgString);
+
+		FMessageDialog::Open(EAppMsgType::Ok, MsgText, &TitleText);
+
+		UE_LOG(Maze, Warning, TEXT("Maze wrapper does not exists."));
+	}
+
 	MazeWrapper->InstantiateMazeBuilder();
 
 	return FReply::Handled();
 }
 
+//Rendering the combo button
 void FMazeEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 {
 	const float Factor = 256.0f;
@@ -111,7 +122,7 @@ void FMazeEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 		  [
 			SNew(STextBlock)
 			.AutoWrapText(true)
-			.Text(LOCTEXT("HelperLabel", "Steps in order to create a maze:\n1. Choose a wrapper class\n2. Configure the spawned wrapper in the details panel\n3. Click 'Generate Maze' and enjoy! :)"))
+			.Text(LOCTEXT("HelperLabel", "Steps in order to create a maze:\n1. Create a wrapper class\n2. Configure the spawned wrapper in the details panel\n3. Generate a maze and enjoy! :)"))
 		  ]
 
 			+ SVerticalBox::Slot()
@@ -124,7 +135,7 @@ void FMazeEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 				    .ButtonContent()
 				    [
 						SNew(STextBlock)
-						.Text(FText::FromString("Choose a wrapper class:"))
+						.Text(FText::FromString("Maze Generator options:"))
 				    ]
 					.MenuContent()
 					[
@@ -137,9 +148,9 @@ void FMazeEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 						[
 							SNew(SButton)
 							.ButtonColorAndOpacity(FLinearColor(1.0f, 1.0f, 1.0f, 0.0f))
-							.Text(FText::FromString("Create a roombased wrapper."))
+							.Text(FText::FromString("Create a wrapper class."))
 							.ForegroundColor(FLinearColor(255.0f, 255.0f, 255.0f, 1.0f))
-							.OnClicked(this, &FMazeEdModeToolkit::OnClickedRoombasedWrapper)
+							.OnClicked(this, &FMazeEdModeToolkit::OnClickedCreateWrapper)
 						]
 
 						+ SVerticalBox::Slot()
@@ -149,35 +160,11 @@ void FMazeEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 						[
 							SNew(SButton)
 							.ButtonColorAndOpacity(FLinearColor(1.0f, 1.0f, 1.0f, 0.0f))
-							.Text(FText::FromString("Create a cavebased wrapper."))
+							.Text(FText::FromString("Generate a maze."))
 							.ForegroundColor(FLinearColor(255.0f, 255.0f, 255.0f, 1.0f))
-							.OnClicked(this, &FMazeEdModeToolkit::OnClickedCavebasedWrapper)
+							.OnClicked(this, &FMazeEdModeToolkit::OnClickedGenerateMaze)
 						]
 					]
-				]
-
-			+ SVerticalBox::Slot()
-				.HAlign(HAlign_Center)
-				.AutoHeight()
-				.Padding(0)
-				[
-					SNew(SHorizontalBox)
-
-					+ SHorizontalBox::Slot()
-					.AutoWidth()
-					[
-						SNew(SButton)
-						.Text(FText::FromString("Generate a roombased maze"))
-						.OnClicked(this, &FMazeEdModeToolkit::OnClickedRoombasedMaze)
-					]
-
-			+ SHorizontalBox::Slot()
-				.AutoWidth()
-				[
-					SNew(SButton)
-					.Text(FText::FromString("Generate a cavebased maze"))
-				.OnClicked(this, &FMazeEdModeToolkit::OnClickedCavebasedMaze)
-				]					
 				]
 		]
 		];
