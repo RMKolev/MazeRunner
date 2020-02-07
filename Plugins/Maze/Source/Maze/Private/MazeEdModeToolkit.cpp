@@ -15,7 +15,11 @@
 #include "Engine/GameEngine.h"
 #include "Maze.h"
 #include "Misc/MessageDialog.h"
+#include "EngineUtils.h"
+#include "MazeBuilderWrapper.h"
 #include "EditorModeManager.h"
+
+
 
 #define LOCTEXT_NAMESPACE "FMazeEdModeToolkit"
 
@@ -46,14 +50,30 @@ FReply FMazeEdModeToolkit::OnClickedCavebasedWrapper()
 	FVector Location = FVector(0.0f);
 	FRotator Rotation = FRotator(0, 0, 0);
 
-	CavebasedMazeWrapper = (ABlockBuilderWrapper*)EditorWorld->SpawnActor(ABlockBuilderWrapper::StaticClass(), &Location, &Rotation);
+	auto It = TActorIterator<AMazeBuilderWrapper>(EditorWorld);
 
-	FString WrapperName("Cavebased Wrapper");
+	for (; It; ++It)
+	{
+		MazeWrapper = *It;
+	}
 
-	CavebasedMazeWrapper->Rename(*WrapperName);
-	CavebasedMazeWrapper->SetActorLabel(*WrapperName);
+	if (MazeWrapper == nullptr)
+	{
+		MazeWrapper = (AMazeBuilderWrapper*)EditorWorld->SpawnActor(AMazeBuilderWrapper::StaticClass(), &Location, &Rotation);
 
-	UE_LOG(Maze, Warning, TEXT("New cavebased wrapper."));
+		FString WrapperName("Maze Wrapper");
+
+		MazeWrapper->Rename(*WrapperName);
+		MazeWrapper->SetActorLabel(*WrapperName);
+
+		FText TitleText = FText::FromString(TEXT("Maze Plugin"));
+		FString MsgString = TEXT("AMazeWrapper named Maze Wrapper was created.\nPlease configure it in the Details Panel and generate the chosen maze.");
+		FText MsgText = FText::FromString(MsgString);
+
+		FMessageDialog::Open(EAppMsgType::Ok, MsgText, &TitleText);
+
+		UE_LOG(Maze, Warning, TEXT("New maze wrapper."));
+	}
 
 	return FReply::Handled();
 }
@@ -65,12 +85,7 @@ FReply FMazeEdModeToolkit::OnClickedRoombasedMaze()
 
 FReply FMazeEdModeToolkit::OnClickedCavebasedMaze()
 {
-	FActorSpawnParameters SpawnInfo;
-	FVector Location = FVector(0.0f);
-	FRotator Rotation = FRotator(0, 0, 0);
-
-	ABlockBuilder* CavebasedMaze = CavebasedMazeWrapper->SpawnBlockBuilderBP(Location, Rotation, SpawnInfo);
-	CavebasedMaze->GenerateCavebasedMaze();
+	MazeWrapper->InstantiateMazeBuilder();
 
 	return FReply::Handled();
 }
