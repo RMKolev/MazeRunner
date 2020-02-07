@@ -8,27 +8,12 @@
 void AMazeScalingBuilder::BeginPlay()
 {
 	Super::BeginPlay();
-	auto MGI = (AMazeRoomGenerator*)MG->GetDefaultObject();
-	MGI->BuildMaze();
-	MGI->BuildSurroundingWalls();
-	BuildMazeFromScheme(MGI->GetMazeScheme());
-	MGI->LogMazeScheme();
-	auto Arr = MGI->GetWalkableTerrain();
-	FString p;
-	for (auto T : Arr)
-	{
-		for (auto Q : T)
-			p.AppendInt(Q);
-		p.AppendChar('\n');
-	}
-	UE_LOG(Maze, Warning, TEXT("Passable terrain \n%s"), *p);
 }
 
 void AMazeScalingBuilder::BuildMaze()
 {
-	// TO DO;
+	BuildMazeFromScheme(this->MazeScheme);
 }
-
 void AMazeScalingBuilder::BuildMazeFromScheme( TArray<TArray<int8>> MazeScheme)
 {
 	UE_LOG(Maze, Error, TEXT("HERE! %d"),MazeScheme.Num());
@@ -50,7 +35,6 @@ void AMazeScalingBuilder::BuildMazeFromScheme( TArray<TArray<int8>> MazeScheme)
 						int32 NumberDown = 0;
 						bool bContinueRight = true;
 						bool bContinueDown = true;
-						//bool bRectangle = true;
 						while (bContinueRight || bContinueDown)
 						{
 							if (i+NumberDown >= MazeScheme.Num() )
@@ -61,11 +45,6 @@ void AMazeScalingBuilder::BuildMazeFromScheme( TArray<TArray<int8>> MazeScheme)
 							{
 								bContinueRight = false;
 							}
-							/*if (bContinueDown && bContinueRight)
-							{
-								if (MazeScheme[i + NumberDown][j + NumberRight] != ID)
-									bContinueRight = false;
-							}*/
 							if (bContinueRight)
 							{
 								for (int k = i; k < i + NumberDown && k < MazeScheme.Num(); ++k)
@@ -96,11 +75,6 @@ void AMazeScalingBuilder::BuildMazeFromScheme( TArray<TArray<int8>> MazeScheme)
 									NumberDown++;
 								}
 							}
-							/*if (bContinueRight && bContinueDown)
-							{
-								if (MazeScheme[i + NumberDown][j + NumberRight] != ID)
-									bContinueRight = false;
-							}*/
 						}
 						for (int k = i; k < i + NumberDown; ++k)
 						{

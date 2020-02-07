@@ -63,7 +63,7 @@ void AMazeRoomGenerator::BuildMaze()
 		FIntPoint P2 = Rooms[Path.Key.Key].GetNearestPointFrom(Rooms[Path.Key.Value]);
 		FillPath(P1, P2);
 	}
-
+	this->BuildSurroundingWalls();
 }
 
 void AMazeRoomGenerator::MakeXTunnel(int32 YCoord, int32 X1, int32 X2)
@@ -150,21 +150,6 @@ void AMazeRoomGenerator::LogMazeScheme() const
 		LoggingScheme.AppendChar('\n');
 	}
 	UE_LOG(Maze, Warning, TEXT("\n%s"), *LoggingScheme);
-}
-
-void AMazeRoomGenerator::SetCharacterMap(const TMap<int8, FMazeProperties>& Map)
-{
-	for (auto MapItem : Map)
-	{
-		if (this->CharacterMap.Contains(MapItem.Value.ComponentName))
-		{
-			UE_LOG(Maze, Error, TEXT("MazeRoomGenerator:SetCharacterMap - There is already a component with the same name in the map! (%s)"), *MapItem.Value.ComponentName.ToString());
-		}
-		else
-		{
-			this->CharacterMap.Add(MapItem.Value.ComponentName, MapItem.Value.Id);
-		}
-	}
 }
 
 TArray<FRectangle> AMazeRoomGenerator::GenerateMazeRooms()
