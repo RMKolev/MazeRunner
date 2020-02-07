@@ -21,8 +21,5 @@ protected:
 	virtual void BeginPlay() override;
 public:
 	virtual void BuildMaze() override;
-	virtual void BuildMazeFromScheme(const TArray<TArray<int8>>&);
-	//void BuildSingleRoom(const FMazeRoomParameters&) const;
-	void BuildRooms() const;
-	void BuildPaths() const;
+	virtual void BuildMazeFromScheme(TArray<TArray<int8>>);
 };
