@@ -55,6 +55,7 @@ void AMazeBuilder::GenerateMaze()
 		UE_LOG(Maze, Error, TEXT("AMazeBuilder: Invalid Maze Generation class/blueprint"));
 	}
 	auto MGInstance = (AMazeGenerator*)MazeGenerator->GetDefaultObject();
+	MGInstance->SetCharacterMap(this->CharacterMap);
 	MGInstance->BuildMaze();
 	UE_LOG(Maze, Log, TEXT("AMazeBuilder: Maze successfully generated"));
 	this->MazeScheme = MGInstance->GetMazeScheme();

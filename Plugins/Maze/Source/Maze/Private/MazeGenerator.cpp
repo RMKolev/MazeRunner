@@ -76,6 +76,7 @@ void AMazeGenerator::SetSeed(int32 Seed)
 
 void AMazeGenerator::SetCharacterMap(const TMap<int8, FMazeProperties>& Map )
 {
+	this->CharacterMap.Empty();
 	for (auto MapItem : Map)
 	{
 		if (this->CharacterMap.Contains(MapItem.Value.ComponentName))
