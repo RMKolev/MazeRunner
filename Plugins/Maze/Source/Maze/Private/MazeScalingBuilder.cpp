@@ -10,60 +10,19 @@
 void AMazeScalingBuilder::BeginPlay()
 {
 	Super::BeginPlay();
-	auto MGI = (AMazeGenerator*)MG->GetDefaultObject();
-	MGI->BuildMaze();
-	//MGI->BuildSurroundingWalls();
-	BuildMazeFromScheme(MGI->GetMazeScheme());
-
-	//MGI->LogMazeScheme();
-
-	/*TArray<AActor*> AttachedActors;
-	this->GetAttachedActors(AttachedActors);
-	UE_LOG(Maze, Warning, TEXT("AMazeScalingBuilder::BeginPlay() Num of attatched actors: %d"), AttachedActors.Num());
-
-	for (auto temp : RoomTemplates)
-	{
-		auto actor = World->SpawnActor<AMazeRoom>(temp, FVector(100, 100, 317.4), FRotator::ZeroRotator);
-		actor->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform, TEXT("Test Room"));
-		UE_LOG(Maze, Warning, TEXT("AMazeScalingBuilder::BeginPlay() actor name: %s"), *actor->GetName());
-	}
-
-	//TArray<AActor*> AttachedActors;
-	this->GetAttachedActors(AttachedActors);
-	UE_LOG(Maze, Warning, TEXT("AMazeScalingBuilder::BeginPlay() Num of attatched actors: %d"), AttachedActors.Num());
-	for (auto Actor : AttachedActors)
-	{
-		TArray<UInstancedStaticMeshComponent*> comps;
-		Actor->GetComponents<UInstancedStaticMeshComponent>(comps);
-
-		UE_LOG(Maze, Warning, TEXT("AMazeScalingBuilder::BeginPlay() Num of comps: %d"), comps.Num());
-		for(int i = 0; i < comps.Num(); ++i)
-		{
-			UE_LOG(Maze, Warning, TEXT("AMazeScalingBuilder::BeginPlay() %s"), *comps[i]->GetName());
-			
-		}
-	}*/
-
-	/*MGI->LogMazeScheme();
-	auto Arr = MGI->GetWalkableTerrain();
-	FString p;
-	for (auto T : Arr)
-	{
-		for (auto Q : T)
-			p.AppendInt(Q);
-		p.AppendChar('\n');
-	}
-	UE_LOG(Maze, Warning, TEXT("Passable terrain \n%s"), *p);*/
 }
 
 void AMazeScalingBuilder::BuildMaze()
 {
-	// TO DO;
+	if (this->MazeScheme.Num() == 0)
+	{
+		UE_LOG(Maze, Error, TEXT("MazeScalingBuilder:BuildMaze() - MazeScheme is not initialised or empty!"));
+		return;
+	}
+	BuildMazeFromScheme(this->MazeScheme);
 }
-
 void AMazeScalingBuilder::BuildMazeFromScheme( TArray<TArray<int8>> MazeScheme)
 {
-	UE_LOG(Maze, Error, TEXT("HERE! %d"),MazeScheme.Num());
 	for (int i = 0; i < MazeScheme.Num(); ++i)
 	{
 		for (int j = 0; j < MazeScheme[i].Num(); ++j)
@@ -83,7 +42,6 @@ void AMazeScalingBuilder::BuildMazeFromScheme( TArray<TArray<int8>> MazeScheme)
 						int32 NumberDown = 0;
 						bool bContinueRight = true;
 						bool bContinueDown = true;
-						//bool bRectangle = true;
 						while (bContinueRight || bContinueDown)
 						{
 							if (i+NumberDown >= MazeScheme.Num() )
@@ -94,11 +52,6 @@ void AMazeScalingBuilder::BuildMazeFromScheme( TArray<TArray<int8>> MazeScheme)
 							{
 								bContinueRight = false;
 							}
-							/*if (bContinueDown && bContinueRight)
-							{
-								if (MazeScheme[i + NumberDown][j + NumberRight] != ID)
-									bContinueRight = false;
-							}*/
 							if (bContinueRight)
 							{
 								for (int k = i; k < i + NumberDown && k < MazeScheme.Num(); ++k)
@@ -129,11 +82,6 @@ void AMazeScalingBuilder::BuildMazeFromScheme( TArray<TArray<int8>> MazeScheme)
 									NumberDown++;
 								}
 							}
-							/*if (bContinueRight && bContinueDown)
-							{
-								if (MazeScheme[i + NumberDown][j + NumberRight] != ID)
-									bContinueRight = false;
-							}*/
 						}
 						for (int k = i; k < i + NumberDown; ++k)
 						{
@@ -142,17 +90,19 @@ void AMazeScalingBuilder::BuildMazeFromScheme( TArray<TArray<int8>> MazeScheme)
 								MazeScheme[k][l] = 0;
 							}
 						}
-						//UE_LOG(Maze, Log, TEXT("Maze Component with size:%d,%d"), NumberRight, NumberDown);
+
+						UE_LOG(Maze, Log, TEXT("Building Maze Component with size:%d,%d on Coordinates %d,%d"), NumberRight, NumberDown, i, j);
+
 						auto Instance = InstanceMeshes.FindChecked(InstanceName);
 						FIntVector InstanceScaleInt = FIntVector(ComponentInformation.Scale.X * (NumberDown), ComponentInformation.Scale.Y * (NumberRight), ComponentInformation.Scale.Z);
 						FVector InstanceScale = FVector(ComponentInformation.Scale.X * Basis.Scale.X* (NumberDown), ComponentInformation.Scale.Y * Basis.Scale.Y * (NumberRight), ComponentInformation.Scale.Z * Basis.Scale.Z);
-						FTransform Trans(FRotator::ZeroRotator, Basis.GetMazeActorLocation(FIntPoint(i, j), InstanceScaleInt), InstanceScale);
+						FTransform Trans(FRotator::ZeroRotator, Basis.GetMazeComponentLocation(FIntPoint(i, j), InstanceScaleInt), InstanceScale);
 						Instance->AddInstanceWorldSpace(Trans);
 					}
 				}
 				else
 				{
-					//UE_LOG(Maze, Error, TEXT("No valid component exists for this code: %d"), MazeScheme[i][j]);
+					UE_LOG(Maze, Error, TEXT("No valid component exists for this code: %d"), MazeScheme[i][j]);
 
 				}
 			}

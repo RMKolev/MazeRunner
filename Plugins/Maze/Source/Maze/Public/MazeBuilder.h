@@ -4,22 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "MazeRoom.h"
+#include "MazeGenerator.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "MazeBuilder.generated.h"
-USTRUCT()
-struct FMazeProperties
-{
-	GENERATED_BODY();
-	UPROPERTY(EditAnywhere)
-	FName ComponentName;
-	UPROPERTY(EditAnywhere)
-	FName InstanceMeshName;
-	UPROPERTY(EditAnywhere)
-	FIntVector Scale;
-	UPROPERTY(EditAnywhere)
-	int8 Id;
-};
 
 USTRUCT()
 struct FMazeBasis
@@ -40,10 +27,15 @@ struct FMazeBasis
 	{
 		return Start + (FVector(Mp.X + 0.5, Mp.Y + 0.5, 0) *Scale*100);
 	}
-	FVector GetMazeActorLocation(FIntPoint Mp, const FIntVector ActorScale) const
+	FVector GetMazeComponentLocation(FIntPoint Mp, const FIntVector ComponentScale) const
 	{
-		return GetMazePointLocation(Mp) + FVector(ActorScale.X, ActorScale.Y, ActorScale.Z) * (Scale*50);
+		return GetMazePointLocation(Mp) + FVector(ComponentScale.X, ComponentScale.Y, ComponentScale.Z) * (Scale*50);
 	}
+	FVector GetMazeActorLocation(FIntPoint Mp, const FIntVector ComponentScale) const
+	{
+		return GetMazeComponentLocation(Mp,ComponentScale) + FVector(0,0,0.5)*Scale*100;
+	}
+	
 };
 
 UCLASS()
@@ -52,10 +44,10 @@ class MAZE_API AMazeBuilder : public AActor
 	GENERATED_BODY()
 
 protected:
-
-	UWorld* World;
 	//A map for names when using a Character Matrix. 
 	//Associates every value with a Name of an InstanceMesh which then adds the component
+	UPROPERTY(Category = MazeAlgorithm, EditAnywhere)
+		TSubclassOf<AMazeGenerator> MazeGenerator;
 	UPROPERTY(EditAnywhere)
 		TMap<int8, FMazeProperties> CharacterMap;
 	//All the Instance Meshes to be initialised. Each actor here will receive an instance stored in InstanceMeshes
@@ -67,10 +59,27 @@ protected:
 	// Basis for the built Maze. Used for calculating the positions of all maze points (and actors)
 	UPROPERTY(EditAnywhere)
 		FMazeBasis Basis;
+	// Boolean value telling the builder whether to build the maze at runtime.
+	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
+		bool bBuildOnPlay;
+	// Boolean value telling the builder whether to render the maze at runtime.
+	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
+		bool bGenerateOnPlay;
+	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
+		FName CharacterName;
+	FVector CharacterStartPoint;
+	// A matrix to store the Maze Schematic upon generation
+	TArray<TArray<int8>> MazeScheme;
 	virtual void BeginPlay() override;
+
 public:
 	// Function to build the maze. To be implemented in heirs of class.
 	virtual void BuildMaze() {};
+	virtual void GenerateMaze();
+	void RegisterInstanceMeshComponents();
+	void SetCharacterMap() {};
+	bool GetBuildOnPlay() { return bBuildOnPlay; }
+	bool GetGenerateOnPlay() { return bGenerateOnPlay; }
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

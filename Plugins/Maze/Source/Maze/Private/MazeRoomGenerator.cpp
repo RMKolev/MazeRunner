@@ -6,7 +6,7 @@
 AMazeRoomGenerator::AMazeRoomGenerator()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 }
 
@@ -63,7 +63,7 @@ void AMazeRoomGenerator::BuildMaze()
 		FIntPoint P2 = Rooms[Path.Key.Key].GetNearestPointFrom(Rooms[Path.Key.Value]);
 		FillPath(P1, P2);
 	}
-
+	this->BuildSurroundingWalls();
 }
 
 void AMazeRoomGenerator::MakeXTunnel(int32 YCoord, int32 X1, int32 X2)
@@ -152,21 +152,6 @@ void AMazeRoomGenerator::LogMazeScheme() const
 	UE_LOG(Maze, Warning, TEXT("\n%s"), *LoggingScheme);
 }
 
-void AMazeRoomGenerator::SetCharacterMap(const TMap<int8, FMazeProperties>& Map)
-{
-	for (auto MapItem : Map)
-	{
-		if (this->CharacterMap.Contains(MapItem.Value.ComponentName))
-		{
-			UE_LOG(Maze, Error, TEXT("MazeRoomGenerator:SetCharacterMap - There is already a component with the same name in the map! (%s)"), *MapItem.Value.ComponentName.ToString());
-		}
-		else
-		{
-			this->CharacterMap.Add(MapItem.Value.ComponentName, MapItem.Value.Id);
-		}
-	}
-}
-
 TArray<FRectangle> AMazeRoomGenerator::GenerateMazeRooms()
 {
 	TArray<FRectangle> Rooms;
@@ -216,6 +201,41 @@ TArray<FRectangle> AMazeRoomGenerator::GenerateMazeRooms()
 TArray<TArray<int8>> AMazeRoomGenerator::GetMazeScheme() const
 {
 	return this->MazeScheme;
+}
+
+FIntPoint AMazeRoomGenerator::GetRandomCharacterStartingPoint() const
+{
+	auto MazeWalkableTerrain = this->GetWalkableTerrain();
+	// This will draw 500 random locations to spawn.
+	for (int Tries = 500; Tries > 0; --Tries)
+	{
+		int X = RStream.RandRange(0, MazeWalkableTerrain.Num()-1);
+		int Y = RStream.RandRange(0, MazeWalkableTerrain[X].Num()-1);
+		if (MazeWalkableTerrain[X][Y])
+		{
+			UE_LOG(Maze,Log,TEXT("AMazeRoomGenerator: GetRandomCharacterStartingPoint - Character"))
+			return FIntPoint(X, Y);
+		}
+	}
+	// There is a chance after 500 tries the algorithm hasn't found a valid point, so a guaranteed approach is used
+	int NumberTries = RStream.RandRange(30, 100 * NumberOfRooms * MaximumRoomScale.X * MaximumRoomScale.Y);
+	FIntPoint Result = FIntPoint(0, 0);
+	for (int i = 0; i < MazeWalkableTerrain.Num(); ++i)
+	{
+		for (int j = 0; j < MazeWalkableTerrain[i].Num(); ++j)
+		{
+			if (MazeWalkableTerrain[i][j])
+			{
+				Result = FIntPoint(i, j);
+				NumberTries--;
+				if (NumberTries <= 0)
+				{
+					return Result;
+				}
+			}
+		}
+	}
+	return Result; 
 }
 
 void AMazeRoomGenerator::BuildSurroundingWalls()
@@ -282,7 +302,7 @@ TArray<TArray<TPair<int32, uint64>>> AMazeRoomGenerator::MakeWeighedGraph(TArray
 		}
 	}
 	int i = 0;
-	//
+	// Used for logging Ribs while debugging the MST
 	/*for (auto P : Result) {
 		UE_LOG(Maze, Warning, TEXT("From Rib: %d"), i);
 		for (auto T : P) {
@@ -339,10 +359,4 @@ TArray<TPair<TPair<int32, int32>, uint64>> AMazeRoomGenerator::GetApproximateMin
 	return MST;
 }
 
-// Called every frame
-void AMazeRoomGenerator::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
 
