@@ -9,6 +9,24 @@
 #include "MazeBuilder.generated.h"
 
 USTRUCT()
+struct FMazeActor
+{
+	GENERATED_BODY();
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<AActor> Asset;
+	UPROPERTY(EditAnywhere)
+		int8 Priority;
+	UPROPERTY(EditAnywhere)
+		int32 Quantity;
+	UPROPERTY(EditAnywhere)
+		FVector Offset;
+	UPROPERTY(EditAnywhere)
+		FVector Scale;
+	UPROPERTY(EditAnywhere)
+		bool bIsSafe;
+
+};
+USTRUCT()
 struct FMazeBasis
 {
 	GENERATED_BODY()
@@ -67,15 +85,22 @@ protected:
 		bool bGenerateOnPlay;
 	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
 		FName CharacterName;
-	FVector CharacterStartPoint;
+	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
+		TArray<FMazeActor> ActorsToPlace;
+	FIntPoint CharacterStartPoint;
 	// A matrix to store the Maze Schematic upon generation
 	TArray<TArray<int8>> MazeScheme;
+	TArray<TArray<bool>> WalkableTerrain;
 	virtual void BeginPlay() override;
-
+	int32 WorldSeed;
 public:
 	// Function to build the maze. To be implemented in heirs of class.
 	virtual void BuildMaze() {};
+	// Function to Generate The Maze via the MazeGenerator algorithms.
+	// Sets the starting player location,MazeScheme, and WalkableTerrain.
 	virtual void GenerateMaze();
+	// Function that will place the actors from ActorsToPlace array, with priority = ascending ( 0 goes first)
+	virtual void PlaceActors();
 	void RegisterInstanceMeshComponents();
 	void SetCharacterMap() {};
 	bool GetBuildOnPlay() { return bBuildOnPlay; }
@@ -85,4 +110,5 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	// Sets default values for this actor's properties
 	AMazeBuilder();
+	FIntPoint GetRandomWalkablePoint(FRandomStream&);
 };
