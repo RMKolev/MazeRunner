@@ -105,6 +105,8 @@ FReply FMazeEdModeToolkit::OnClickedGenerateMaze()
 		FMessageDialog::Open(EAppMsgType::Ok, MsgText, &TitleText);
 
 		UE_LOG(Maze, Warning, TEXT("Maze wrapper does not exists."));
+
+		return FReply::Handled();
 	}
 
 	MazeWrapper->InstantiateMazeBuilder();
