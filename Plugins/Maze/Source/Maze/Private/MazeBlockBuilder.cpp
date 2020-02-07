@@ -8,9 +8,8 @@
 
 void AMazeBlockBuilder::BuildMaze() 
 {
-	auto MGI = (AMazeGenerator*)MG.GetDefaultObject();
-	MGI->BuildMaze();
-	BuildMazeFromScheme(MGI->GetMazeScheme());
+	
+	BuildMazeFromScheme(this->MazeScheme);
 }
 
 void AMazeBlockBuilder::BeginPlay()
@@ -28,13 +27,14 @@ void AMazeBlockBuilder::BuildMazeFromScheme(const TArray<TArray<int8>>& MazeSche
 			if (CharacterMap.Find(MazeScheme[i][j]) != nullptr)
 			{
 				UE_LOG(Maze, Warning, TEXT("Building actor on coordinates %d,%d"), i, j);
-				auto InstanceName = CharacterMap.FindChecked(MazeScheme[i][j]);
-				if (InstanceMeshes.Find(InstanceName.InstanceMeshName) != nullptr)
-				{
-					auto Instance = InstanceMeshes.FindChecked(InstanceName.InstanceMeshName);
-					FTransform Trans(FRotator::ZeroRotator, Basis.GetMazeActorLocation(FIntPoint(i, j), FIntVector(1, 1, MazeScheme[i][j] == 3 ? 2 : 1)), FVector(1, 1, MazeScheme[i][j] == 3 ? 2 : 1));
-					Instance->AddInstanceWorldSpace(Trans);
-				}
+				auto ComponentInformation = CharacterMap.FindChecked(MazeScheme[i][j]);
+				auto InstanceName = ComponentInformation.InstanceMeshName;
+				auto Instance = InstanceMeshes.FindChecked(InstanceName);
+				FIntVector InstanceScaleInt = FIntVector(ComponentInformation.Scale.X, ComponentInformation.Scale.Y, ComponentInformation.Scale.Z);
+				FVector InstanceScale = FVector(ComponentInformation.Scale.X * Basis.Scale.X, ComponentInformation.Scale.Y * Basis.Scale.Y, ComponentInformation.Scale.Z * Basis.Scale.Z);
+				FTransform Trans(FRotator::ZeroRotator, Basis.GetMazeComponentLocation(FIntPoint(i, j), InstanceScaleInt), InstanceScale);
+				Instance->AddInstanceWorldSpace(Trans);
+			
 			}
 			else
 			{

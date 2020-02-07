@@ -17,12 +17,6 @@ class MAZE_API AMazeBlockBuilder : public AMazeBuilder
 private:
 	float SideOfCubeAtScaleOne = 100.f;
 
-	UPROPERTY(EditDefaultsOnly)
-	FVector ScaleForAllMeshes = FVector(1.0f, 1.0f, 1.0f);
-
-	UPROPERTY(Category = MazeAlgorithm, EditAnywhere)
-	TSubclassOf<class AMazeGenerator> MG;
-
 public:
 	void BuildMaze() override;
 	void BeginPlay() override;

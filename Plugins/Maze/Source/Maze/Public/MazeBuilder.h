@@ -51,7 +51,7 @@ struct FMazeBasis
 	}
 	FVector GetMazeActorLocation(FIntPoint Mp, const FIntVector ComponentScale) const
 	{
-		return GetMazeComponentLocation(Mp,ComponentScale) + FVector(0,0,0.5)*Scale*100;
+		return GetMazeComponentLocation(Mp,ComponentScale) + FVector(0,0,1)*Scale*50;
 	}
 	
 };

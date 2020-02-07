@@ -296,8 +296,8 @@ TArray<Edge> AMazeCaveGenerator::Kruskal(int32 NumOfNodes, TArray<Edge>& Edges)
 	TArray<int32> Rank;
 	TArray<Edge> MST;
 	Edges.Sort();
-	Parent.SetNum(Edges.Num());
-	Rank.SetNum(Edges.Num());
+	Parent.SetNum(NumOfNodes);
+	Rank.SetNum(NumOfNodes);
 	for (int i = 0; i < NumOfNodes; ++i)
 	{
 		Parent[i] = i;

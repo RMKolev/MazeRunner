@@ -52,7 +52,7 @@ TArray<TArray<bool>> AMazeGenerator::GetWalkableTerrain() const
 	}
 	for (int i = 0; i < MazeScheme.Num(); ++i)
 	{
-		for (int j = 0; j < MazeScheme.Num(); ++j)
+		for (int j = 0; j < MazeScheme[i].Num(); ++j)
 		{
 			if (MazeScheme[i][j] != 0 && MazeScheme[i][j] != WallCharacter)
 			{
