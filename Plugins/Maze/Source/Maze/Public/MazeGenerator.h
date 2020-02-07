@@ -28,14 +28,14 @@ class MAZE_API AMazeGenerator : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AMazeGenerator();
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 	virtual void BuildMaze() {};
 	virtual void LogMazeScheme() const;
 	TArray<TArray<bool>> GetWalkableTerrain() const;
 	virtual TArray <TArray<int8>> GetMazeScheme() const;
 	void SetSeed(int32 Seed);
 	virtual void SetCharacterMap(const TMap<int8, FMazeProperties>&);
+	// Function to get valid starting coordinates for a character. Implemented differently in every MazeGenerator.
+	virtual FIntPoint GetRandomCharacterStartingPoint() const { return FIntPoint(0, 0); };
 protected:
 	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
 		uint64 WorldSeed;

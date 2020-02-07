@@ -12,11 +12,15 @@ void AMazeScalingBuilder::BeginPlay()
 
 void AMazeScalingBuilder::BuildMaze()
 {
+	if (this->MazeScheme.Num() == 0)
+	{
+		UE_LOG(Maze, Error, TEXT("MazeScalingBuilder:BuildMaze() - MazeScheme is not initialised or empty!"));
+		return;
+	}
 	BuildMazeFromScheme(this->MazeScheme);
 }
 void AMazeScalingBuilder::BuildMazeFromScheme( TArray<TArray<int8>> MazeScheme)
 {
-	UE_LOG(Maze, Error, TEXT("HERE! %d"),MazeScheme.Num());
 	for (int i = 0; i < MazeScheme.Num(); ++i)
 	{
 		for (int j = 0; j < MazeScheme[i].Num(); ++j)
@@ -83,7 +87,7 @@ void AMazeScalingBuilder::BuildMazeFromScheme( TArray<TArray<int8>> MazeScheme)
 								MazeScheme[k][l] = 0;
 							}
 						}
-						UE_LOG(Maze, Log, TEXT("Maze Component with size:%d,%d"), NumberRight, NumberDown);
+						UE_LOG(Maze, Log, TEXT("Building Maze Component with size:%d,%d on Coordinates %d,%d"), NumberRight, NumberDown, i, j);
 						auto Instance = InstanceMeshes.FindChecked(InstanceName);
 						FIntVector InstanceScaleInt = FIntVector(ComponentInformation.Scale.X * (NumberDown), ComponentInformation.Scale.Y * (NumberRight), ComponentInformation.Scale.Z);
 						FVector InstanceScale = FVector(ComponentInformation.Scale.X * Basis.Scale.X* (NumberDown), ComponentInformation.Scale.Y * Basis.Scale.Y * (NumberRight), ComponentInformation.Scale.Z * Basis.Scale.Z);

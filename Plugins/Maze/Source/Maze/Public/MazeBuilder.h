@@ -67,7 +67,8 @@ public:
 	// Function to build the maze. To be implemented in heirs of class.
 	virtual void BuildMaze() {};
 	virtual void GenerateMaze();
-	void SetCharacterMap();
+	void RegisterInstanceMeshComponents();
+	void SetCharacterMap() {};
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

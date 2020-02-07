@@ -17,19 +17,13 @@ AMazeBuilder::AMazeBuilder()
 void AMazeBuilder::BeginPlay()
 {
 	Super::BeginPlay();
-
-	for (auto Instance : Assets)
-	{
-		auto Val = NewObject<UInstancedStaticMeshComponent>(this, Instance.Value);
-		Val->RegisterComponent();
-		InstanceMeshes.Add(Instance.Key, Val);
-	}
 	if (bGenerateOnPlay)
 	{
 		this->GenerateMaze();
 	}
 	if (bBuildOnPlay)
 	{
+		this->RegisterInstanceMeshComponents();
 		this->BuildMaze();
 	}
 }
@@ -42,8 +36,17 @@ void AMazeBuilder::GenerateMaze()
 	auto MGInstance = (AMazeGenerator*)MazeGenerator->GetDefaultObject();
 	MGInstance->BuildMaze();
 	UE_LOG(Maze, Log, TEXT("AMazeBuilder: Maze successfully generated"));
-	//MGInstance->LogMazeScheme();
 	this->MazeScheme = MGInstance->GetMazeScheme();
+}
+
+void AMazeBuilder::RegisterInstanceMeshComponents()
+{
+	for (auto Instance : Assets)
+	{
+		auto Val = NewObject<UInstancedStaticMeshComponent>(this, Instance.Value);
+		Val->RegisterComponent();
+		InstanceMeshes.Add(Instance.Key, Val);
+	}
 }
 
 // Called every frame

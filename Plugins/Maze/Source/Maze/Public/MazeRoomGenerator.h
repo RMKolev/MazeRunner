@@ -17,6 +17,12 @@ class MAZE_API AMazeRoomGenerator : public AMazeGenerator
 public:
 	// Sets default values for this actor's properties
 	AMazeRoomGenerator();
+	virtual void BuildMaze() override;
+	virtual void LogMazeScheme() const override;
+
+	virtual TArray<TArray<int8>> GetMazeScheme() const override;
+
+	virtual FIntPoint GetRandomCharacterStartingPoint() const override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -33,21 +39,15 @@ protected:
 	UPROPERTY(Category = AlgorithmProperties, EditAnywhere)
 		FVector2D ResolutionStep = FVector2D(1.3, 1.3);
 
-
-public:
-	virtual void BuildMaze() override;
 	void MakeXTunnel(int32, int32, int32);
 	void MakeYTunnel(int32, int32, int32);
 	void FillPath(FIntPoint, FIntPoint);
 	void FillRoom(const FRectangle&);
-	virtual void LogMazeScheme() const override;
 
-	virtual TArray<TArray<int8>> GetMazeScheme() const override;
-	TArray<FRectangle> GenerateMazeRooms();
-	void BuildSurroundingWalls();
 	FRectangle GetRandomRectangle(FIntPoint) const;
 	TArray <TArray<TPair<int32, uint64>>> MakeWeighedGraph(TArray<FRectangle>&, int32 = 42);
-	TArray<TPair<TPair<int32, int32>, uint64>> GetApproximateMinimalSpanTreeGraph(TArray<FRectangle>& rectangles, int32 neighborLimit = 42);
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	TArray<TPair<TPair<int32, int32>, uint64>> GetApproximateMinimalSpanTreeGraph(TArray<FRectangle>& , int32 = 42);
+	TArray<FRectangle> GenerateMazeRooms();
+	void BuildSurroundingWalls();
+
 };
