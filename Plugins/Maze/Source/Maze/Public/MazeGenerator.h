@@ -32,6 +32,7 @@ public:
 	virtual void LogMazeScheme() const;
 	TArray<TArray<bool>> GetWalkableTerrain() const;
 	virtual TArray <TArray<int8>> GetMazeScheme() const;
+	int32 GetSeed() const { return this->WorldSeed; }
 	void SetSeed(int32 Seed);
 	virtual void SetCharacterMap(const TMap<int8, FMazeProperties>&);
 	// Function to get valid starting coordinates for a character. Implemented differently in every MazeGenerator.

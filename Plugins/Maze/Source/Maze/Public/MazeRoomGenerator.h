@@ -43,7 +43,7 @@ protected:
 	void MakeYTunnel(int32, int32, int32);
 	void FillPath(FIntPoint, FIntPoint);
 	void FillRoom(const FRectangle&);
-
+	FRandomStream GetRandomStream() const { return this->RStream; }
 	FRectangle GetRandomRectangle(FIntPoint) const;
 	TArray <TArray<TPair<int32, uint64>>> MakeWeighedGraph(TArray<FRectangle>&, int32 = 42);
 	TArray<TPair<TPair<int32, int32>, uint64>> GetApproximateMinimalSpanTreeGraph(TArray<FRectangle>& , int32 = 42);
