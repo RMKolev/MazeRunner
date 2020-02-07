@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Math/Vector.h"
 #include "MazeEnemyAIController.generated.h"
 
 /**
@@ -14,18 +15,29 @@ class MAZE_API AMazeEnemyAIController : public AAIController
 {
 	GENERATED_BODY()
 
-	UPROPERTY(transient)
+	UPROPERTY()
 	class UBlackboardComponent* BlackboardComp;
 
-	UPROPERTY(transient)
-	class UBehaviorTreeComponent* BehaviourComp;
+	UPROPERTY()
+	class UBehaviorTreeComponent* BehaviourTreeComp;
+
+	UPROPERTY(EditAnywhere, Category = MazeProperties)
+	class UBehaviorTree* BehaviourTree;
 
 public:
+
+	FVector DestLocation;
 
 	AMazeEnemyAIController();
 
 	virtual void OnPossess(APawn* InPawn) override;
 
-	uint8 EnemyKeyID;
+	void ActivateRoaming();
+
+	void ChooseRandomPoint();
+
+	//virtual void FindPathForMoveRequest(const FAIMoveRequest& MoveRequest, FPathFindingQuery& Query, FNavPathSharedPtr& OutPath) const override;
+	   
+//	uint8 EnemyKeyID;
 	
 };

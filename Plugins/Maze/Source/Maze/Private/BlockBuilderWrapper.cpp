@@ -14,7 +14,6 @@ ABlockBuilderWrapper::ABlockBuilderWrapper()
 
 ABlockBuilder* ABlockBuilderWrapper::SpawnBlockBuilderBP(FVector Location, FRotator Rotation, FActorSpawnParameters SpawnInfo)
 {
-
 	if (BlockBuilderClass != NULL)
 	{
 		ABlockBuilder* CavebasedMaze = GetWorld()->SpawnActor<ABlockBuilder>(BlockBuilderClass, Location, Rotation, SpawnInfo);

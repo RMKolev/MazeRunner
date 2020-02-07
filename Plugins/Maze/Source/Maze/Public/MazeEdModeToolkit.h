@@ -18,8 +18,6 @@ public:
 
 	FReply OnClickedRoombasedMaze();
 	FReply OnClickedCavebasedMaze();
-
-	FReply InstantiateNewObject();
 	
 	/** FModeToolkit interface */
 	virtual void Init(const TSharedPtr<IToolkitHost>& InitToolkitHost) override;
@@ -33,8 +31,6 @@ public:
 private:
 
 	TSharedPtr<SWidget> ToolkitWidget;
-	//TArray<int32> MyArray;
-	//ATestUI* test;
 
 	ABlockBuilderWrapper* CavebasedMazeWrapper;
 };

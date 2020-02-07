@@ -14,6 +14,7 @@
 #include "Editor/EditorEngine.h"
 #include "Engine/GameEngine.h"
 #include "Maze.h"
+#include "Misc/MessageDialog.h"
 #include "EditorModeManager.h"
 
 #define LOCTEXT_NAMESPACE "FMazeEdModeToolkit"
@@ -24,10 +25,13 @@ FMazeEdModeToolkit::FMazeEdModeToolkit()
 
 FReply FMazeEdModeToolkit::OnClickedRoombasedWrapper()
 {
-	//BuildingMode = Roombased;
 	UE_LOG(Maze, Warning, TEXT("Roombased mode."));
 
-	InstantiateNewObject();
+	FText TitleText = FText::FromString(TEXT("Maze Plugin"));
+	FString MsgString = TEXT("AActor named... was created.\nPlease configure it in the Details Panel and generate the chosen maze.");
+	FText MsgText = FText::FromString(MsgString);
+
+	FMessageDialog::Open(EAppMsgType::Ok, MsgText, &TitleText);
 
 	return FReply::Handled();
 }
@@ -71,26 +75,6 @@ FReply FMazeEdModeToolkit::OnClickedCavebasedMaze()
 	return FReply::Handled();
 }
 
-FReply FMazeEdModeToolkit::InstantiateNewObject()
-{
-	UWorld* EditorWorld = GEditor->GetEditorWorldContext().World();
-
-	FActorSpawnParameters SpawnInfo;
-	FVector Location = FVector(0.0f);
-	//-3280.0 1970.0 3620.0
-	FRotator Rotation = FRotator(0, 0, 0);
-
-	//test->Init(1, 2, 3.5f, MyArray);
-
-
-	//test = (ATestUI*)EditorWorld->SpawnActor(ATestUI::StaticClass(), &Location, &Rotation);
-	//test->Init(1, 2, 3.5f, MyArray);
-
-	UE_LOG(Maze, Warning, TEXT("New object."));
-
-	return FReply::Handled();
-}
-
 void FMazeEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 {
 	const float Factor = 256.0f;
@@ -99,6 +83,10 @@ void FMazeEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 	.HAlign(HAlign_Center)
 	.Padding(25)
 	[
+		SNew(SHorizontalBox)
+
+		+SHorizontalBox::Slot()
+		[
 		SNew(SVerticalBox)
 
 		+ SVerticalBox::Slot()
@@ -153,16 +141,21 @@ void FMazeEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 					]
 				]
 
+			+ SVerticalBox::Slot()
+				.HAlign(HAlign_Center)
+				.AutoHeight()
 				.Padding(0)
 				[
 					SNew(SHorizontalBox)
+
 					+ SHorizontalBox::Slot()
-				.AutoWidth()
-				[
-					SNew(SButton)
-					.Text(FText::FromString("Generate a roombased maze"))
-				.OnClicked(this, &FMazeEdModeToolkit::OnClickedRoombasedMaze)
-				]
+					.AutoWidth()
+					[
+						SNew(SButton)
+						.Text(FText::FromString("Generate a roombased maze"))
+						.OnClicked(this, &FMazeEdModeToolkit::OnClickedRoombasedMaze)
+					]
+
 			+ SHorizontalBox::Slot()
 				.AutoWidth()
 				[
@@ -171,14 +164,7 @@ void FMazeEdModeToolkit::Init(const TSharedPtr<IToolkitHost>& InitToolkitHost)
 				.OnClicked(this, &FMazeEdModeToolkit::OnClickedCavebasedMaze)
 				]					
 				]
-
-			+ SVerticalBox::Slot()
-				.AutoHeight()
-				[
-					SNew(SButton)
-					.Text(FText::FromString("Spawn an AI enemy"))
-				    .OnClicked(this, &FMazeEdModeToolkit::InstantiateNewObject)
-				]
+		]
 		];
 		
 	FModeToolkit::Init(InitToolkitHost);
