@@ -51,6 +51,7 @@ void AMazeBuilderWrapper::InstantiateMazeBuilder()
 			MBInstance->RegisterInstanceMeshComponents();
 			MBInstance->RegisterAllComponents();
 			MBInstance->BuildMaze();
+			MBInstance->PlaceActors();
 			bSpawnCharacter = true;
 			CharacterName = MBInstance->GetCharacterName();
 			CharacterLocation = MBInstance->GetCharacterStartingLocation();

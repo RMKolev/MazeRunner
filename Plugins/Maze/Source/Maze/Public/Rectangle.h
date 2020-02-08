@@ -6,10 +6,6 @@
 
 class MAZE_API FRectangle
 {
-private:
-	FIntPoint TopLeft;
-	int32 Width;
-	int32 Height;
 public:
 	FIntPoint GetTopLeft() const { return TopLeft; }
 	int32 GetWidth() const { return Width; }
@@ -29,4 +25,9 @@ public:
 	FRectangle() = default;
 	~FRectangle() = default;
 	FString ToString();
+private:
+	FIntPoint TopLeft;
+	int32 Width;
+	int32 Height;
+
 };

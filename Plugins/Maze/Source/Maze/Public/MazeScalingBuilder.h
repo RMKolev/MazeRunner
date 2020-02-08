@@ -13,10 +13,11 @@ UCLASS()
 class MAZE_API AMazeScalingBuilder : public AMazeBuilder
 {
 	GENERATED_BODY()
-protected:
-
-	virtual void BeginPlay() override;
 public:
 	virtual void BuildMaze() override;
 	virtual void BuildMazeFromScheme(TArray<TArray<int8>>);
+protected:
+
+	virtual void BeginPlay() override;
+
 };

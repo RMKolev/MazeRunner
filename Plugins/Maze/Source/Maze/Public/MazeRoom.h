@@ -27,18 +27,6 @@ UCLASS()
 class MAZE_API AMazeRoom : public AActor
 {
 	GENERATED_BODY()
-
-protected:
-	UPROPERTY(Category = MazeParameters, EditAnywhere)
-		FString RoomName; // Name of the room
-	UPROPERTY(Category = MazeParameters, EditAnywhere)
-		TArray<FMazeActorParameters> Components; //Components of the room
-	UPROPERTY(Category = MazeParameters, EditAnywhere)
-		bool bGenerateWalls;
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	//virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -48,4 +36,15 @@ public:
 	FString GetMazeRoomName() const { return this->RoomName; }
 	auto GetMazeComponentIterator() const { return Components.CreateConstIterator(); }
 	virtual void GenerateWalls(const FIntPoint& RoomSize, const TArray<FIntPoint>& ExitPoints);
+protected:
+	UPROPERTY(Category = MazeParameters, EditAnywhere)
+		FString RoomName; // Name of the room
+	UPROPERTY(Category = MazeParameters, EditAnywhere)
+		TArray<FMazeActorParameters> Components; //Components of the room
+	UPROPERTY(Category = MazeParameters, EditAnywhere)
+		bool bGenerateWalls;
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	//virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 };

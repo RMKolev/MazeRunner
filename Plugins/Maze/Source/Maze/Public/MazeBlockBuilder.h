@@ -14,11 +14,11 @@ class MAZE_API AMazeBlockBuilder : public AMazeBuilder
 {
 	GENERATED_BODY()
 	
-private:
-	float SideOfCubeAtScaleOne = 100.f;
-
 public:
 	void BuildMaze() override;
 	void BeginPlay() override;
 	void BuildMazeFromScheme(const TArray<TArray<int8>>& MazeScheme);
+
+private:
+	float SideOfCubeAtScaleOne = 100.f;
 };

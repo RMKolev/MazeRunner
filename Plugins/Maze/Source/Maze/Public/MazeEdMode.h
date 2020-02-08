@@ -9,7 +9,6 @@ class FMazeEdMode : public FEdMode
 {
 public:
 	const static FEditorModeID EM_MazeEdModeId;
-public:
 	FMazeEdMode();
 	virtual ~FMazeEdMode();
 

@@ -60,7 +60,26 @@ UCLASS()
 class MAZE_API AMazeBuilder : public AActor
 {
 	GENERATED_BODY()
-
+public:
+	// Function to build the maze. To be implemented in heirs of class.
+	virtual void BuildMaze() {};
+	// Function to Generate The Maze via the MazeGenerator algorithms.
+	// Sets the starting player location,MazeScheme, and WalkableTerrain.
+	virtual void GenerateMaze();
+	// Function that will place the actors from ActorsToPlace array, with priority = ascending ( 0 goes first)
+	virtual void PlaceActors();
+	void RegisterInstanceMeshComponents();
+	void SetCharacterMap() {};
+	bool GetBuildOnPlay() { return bBuildOnPlay; }
+	bool GetGenerateOnPlay() { return bGenerateOnPlay; }
+	FString GetCharacterName() { return CharacterName.ToString(); }
+	FVector GetCharacterStartingLocation() { return Basis.GetMazeActorLocation(CharacterStartPoint, FIntVector(1, 1, 1)); }
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	// Sets default values for this actor's properties
+	AMazeBuilder();
+	FIntPoint GetRandomWalkablePoint(FRandomStream&);
 protected:
 	//A map for names when using a Character Matrix. 
 	//Associates every value with a Name of an InstanceMesh which then adds the component
@@ -93,24 +112,5 @@ protected:
 	TArray<TArray<bool>> WalkableTerrain;
 	virtual void BeginPlay() override;
 	int32 WorldSeed;
-public:
-	// Function to build the maze. To be implemented in heirs of class.
-	virtual void BuildMaze() {};
-	// Function to Generate The Maze via the MazeGenerator algorithms.
-	// Sets the starting player location,MazeScheme, and WalkableTerrain.
-	virtual void GenerateMaze();
-	// Function that will place the actors from ActorsToPlace array, with priority = ascending ( 0 goes first)
-	virtual void PlaceActors();
-	void RegisterInstanceMeshComponents();
-	void SetCharacterMap() {};
-	bool GetBuildOnPlay() { return bBuildOnPlay; }
-	bool GetGenerateOnPlay() { return bGenerateOnPlay; }
-	FString GetCharacterName() { return CharacterName.ToString(); }
-	FVector GetCharacterStartingLocation() { return Basis.GetMazeActorLocation(CharacterStartPoint, FIntVector(1, 1, 1)); }
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	// Sets default values for this actor's properties
-	AMazeBuilder();
-	FIntPoint GetRandomWalkablePoint(FRandomStream&);
+
 };

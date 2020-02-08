@@ -19,17 +19,11 @@ public:
 	AMazeBuilderWrapper();
 
 	void InstantiateMazeBuilder();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(Category = MazeProperties, EditAnywhere)
-	TSubclassOf<class AMazeBuilder> MazeBuilderClass;
+		TSubclassOf<class AMazeBuilder> MazeBuilderClass;
 
 	UPROPERTY(Category = MazeProperties, VisibleAnywhere)
 		FVector CharacterLocation;
@@ -39,4 +33,7 @@ public:
 
 	UPROPERTY(Category = MazeProperties, VisibleAnywhere)
 		bool bSpawnCharacter;
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 };
